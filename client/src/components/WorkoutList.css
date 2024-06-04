@@ -1,0 +1,11 @@
+.workout-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  .workout-card {
+    padding: 20px;
+  }
+  

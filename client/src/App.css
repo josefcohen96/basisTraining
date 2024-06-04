@@ -1,0 +1,116 @@
+/* App.css */
+
+body {
+  direction: rtl;
+  font-family: Arial, sans-serif;
+}
+
+.app-container {
+  display: flex;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 20px;
+}
+
+.main-content.full-width {
+  width: 100%;
+}
+
+/* Tracking History and New Measurements */
+/* .tracking-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  width: 100%;
+}
+
+.tracking-card {
+  width: 100%;
+  max-width: 1200px;
+  margin: 20px 0;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+} */
+
+.chart-container {
+  width: 100%;
+  height: 500px;
+}
+
+/* .new-measurements-card {
+  width: 100%;
+  max-width: 1200px;
+  margin: 20px 0;
+  padding: 20px;
+  border: 1px solid #e3e6f0;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.new-measurements-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.new-measurements-form .form-group {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 200px; 
+}
+
+.new-measurements-form .form-control {
+  border-radius: 0.25rem;
+  width: 100%;
+}
+
+.new-measurements-form .btn {
+  width: 100%;
+  border-radius: 0.25rem;
+  margin-top: 20px;
+}
+
+.new-measurements-form label {
+  margin-bottom: 5px;
+  font-weight: bold;
+  text-align: right;
+} */
+
+.logout {
+  color: black !important; 
+  margin-top: auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .form-container {
+    width: 60%; /* Utilize more width on smaller screens */
+    padding: 15px; /* Adjust padding */
+  }
+}
+
+input[type="text"], input[type="password"] {
+  width: 100%; /* Make input fields take full width */
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button {
+  width: 100%; /* Make button take full width */
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}

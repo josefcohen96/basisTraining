@@ -1,0 +1,13 @@
+/* src/components/ExerciseDetail.css */
+.exercise-detail {
+    padding: 20px;
+  }
+  
+  .exercise-detail h1 {
+    margin-bottom: 20px;
+  }
+  
+  .video-container {
+    margin-top: 20px;
+  }
+  

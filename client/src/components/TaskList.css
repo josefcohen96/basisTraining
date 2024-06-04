@@ -1,0 +1,14 @@
+.task-list {
+    padding: 20px;
+  }
+  
+  .list-group-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .list-group-item label {
+    flex-grow: 1;
+  }
+  

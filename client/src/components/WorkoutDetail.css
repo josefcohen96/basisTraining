@@ -1,0 +1,82 @@
+.workout-detail-container {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.exercise-card {
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 20px;
+}
+
+.exercise-card .card-title-link {
+  color: #007bff;
+  text-decoration: none;
+  font-size: 1.5rem;
+}
+
+.exercise-card .card-title-link:hover {
+  text-decoration: underline;
+}
+
+.exercise-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.left-column {
+  flex: 2;
+  margin-right: 10px;
+}
+
+.right-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-start;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.form-group-left,
+.form-group-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.navigation-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+  .exercise-card {
+    max-width: 100%;
+  }
+
+  .form-row {
+    flex-direction: column;
+  }
+
+  .form-group-left,
+  .form-group-right {
+    margin-bottom: 15px;
+  }
+}

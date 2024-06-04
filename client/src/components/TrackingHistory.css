@@ -1,0 +1,99 @@
+/* TrackingHistory.css */
+
+.tracking-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.tracking-card {
+  width: 100%;
+  max-width: 1000px;
+  margin: 20px 0;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(167, 133, 133, 0.1);
+  border-radius: 8px;
+}
+
+.graph-card {
+  height: auto;
+  /* Default height */
+}
+
+.chart-container {
+  width: 100%;
+  height: 500px;
+}
+
+.new-measurements-card {
+  width: 100%;
+  max-width: 1000px;
+  margin: 20px 0;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.new-measurements-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.new-measurements-form .form-group {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 200px;
+  /* Grow to fill available space, with a minimum width of 200px */
+}
+
+.new-measurements-form .form-control {
+  border-radius: 0.25rem;
+  width: 100%;
+}
+
+.new-measurements-form .btn {
+  width: 100%;
+  border-radius: 0.25rem;
+  margin-top: 20px;
+}
+
+.new-measurements-form label {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .tracking-container {
+    width: 100%;
+    padding: 15px;
+  }
+
+  .tracking-card,
+  .new-measurements-card {
+    width: 100%;
+  }
+
+  .chart-container {
+    height: 300px;
+  }
+
+  .graph-card {
+    max-height: 400px;
+    /* Maximum height for mobile devices */
+  }
+
+  .new-measurements-form .form-group {
+    flex: 1 1 100%;
+    /* Grow to fill available space, with a minimum width of 100% */
+  }
+
+  .new-measurements-form .btn {
+    margin-top: 15px;
+    font-size: 14px;
+  }
+}

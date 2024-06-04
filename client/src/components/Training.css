@@ -1,0 +1,43 @@
+.training-container {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .workout-card {
+    width: 100%;
+    max-width: 800px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .workout-card .card-body {
+    padding: 20px;
+  }
+  
+  .workout-card .card-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .workout-card .card-text {
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .accordion-item {
+    border: none;
+  }
+  
+  .accordion-header {
+    background-color: #f8f9fa;
+    font-weight: bold;
+  }
+  
+  .accordion-body {
+    background-color: #ffffff;
+  }
+  

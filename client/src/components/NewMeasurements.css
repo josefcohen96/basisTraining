@@ -1,0 +1,38 @@
+.new-measurements-card {
+    width: 100%;
+    max-width: 1200px;
+    margin: 20px 0;
+    padding: 20px;
+    border: 1px solid #e3e6f0;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .new-measurements-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .new-measurements-form .form-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 200px; /* Grow to fill available space, with a minimum width of 200px */
+  }
+  
+  .new-measurements-form .form-control {
+    border-radius: 0.25rem;
+    width: 100%;
+  }
+  
+  .new-measurements-form .btn {
+    width: 100%;
+    border-radius: 0.25rem;
+    margin-top: 20px;
+  }
+  
+  .new-measurements-form label {
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  

@@ -1,0 +1,45 @@
+/* src/components/TrainingList.css */
+.training-card {
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.training-card .card-body {
+  padding: 20px;
+}
+
+.training-card .card-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.training-card .card-text {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end; /* Align buttons to the right */
+}
+
+.small-button {
+  padding: 5px 10px;
+  font-size: 12px; /* Smaller font size */
+  width: auto; /* Ensure buttons are not too wide */
+}.button-group {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end; /* Align buttons to the right */
+}
+
+.small-button {
+  padding: 5px 10px;
+  font-size: 12px; /* Smaller font size */
+  width: auto; /* Ensure buttons are not too wide */
+}
