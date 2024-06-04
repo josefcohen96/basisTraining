@@ -401,14 +401,20 @@ app.post('/api/workouts/save', async (req, res) => {
 
 
 
-const checkAdmin = (req, res, next) => {
-  const adminUserId = req.headers['admin-user-id'];
-  // Verify the admin user (add your logic here)
-  next();
-};
+
 
 
 // ########################### ADMIN ROUTES ############################
+
+const checkAdmin = (req, res, next) => {
+  const adminUserId = req.headers['admin-user-id'];
+  // Verify the admin user (add your logic here)
+  // if (!adminUserId) {
+  //   return res.status(401).json({ error: 'Unauthorized' });
+  // }
+  next();
+};
+
 app.get('/api/admin/users', checkAdmin, async (req, res) => {
   try {
     const users = await pool.query('SELECT * FROM users where role = $1', ['user']);
@@ -494,6 +500,7 @@ app.put('/api/admin/training/:trainingId', checkAdmin, async (req, res) => {
 app.get('/api/admin/exercises', checkAdmin, async (req, res) => {
   try {
     const exercises = await pool.query('SELECT exercise_id, exercise_name FROM exercises');
+    console.log('Exercises:', exercises.rows);
     res.json(exercises.rows);
   } catch (err) {
     console.error('Error fetching exercises:', err);

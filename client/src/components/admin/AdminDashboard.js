@@ -36,7 +36,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchExercises = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/exercises'); // Adjust the endpoint as needed
+        const response = await axios.get('http://localhost:5000/api/admin/exercises'); // Adjust the endpoint as needed
         setExercises(response.data);
       } catch (err) {
         console.error('Error fetching exercises:', err);
@@ -132,6 +132,14 @@ const AdminDashboard = () => {
       }
     }
   };
+  const handleAddWorkout = async () => {
+    try {
+      await axios.post(`http://localhost:5000/api/admin/addWorkout`);
+    } catch (err) {
+      console.error('Error adding workout:', err);
+    }
+  };
+
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
@@ -162,6 +170,9 @@ const AdminDashboard = () => {
                 <button className="btn btn-link" onClick={() => toggleRowExpansion(workout.workout_id)}>
                   {expandedRows.includes(workout.workout_id) ? '▼' : '▶'}
                 </button>
+
+
+
               </div>
               <div className="card-body">
                 <p>{workout.workout_description}</p>
@@ -234,12 +245,19 @@ const AdminDashboard = () => {
                         ))}
                       </tbody>
                     </table>
+
                   </div>
                 )}
+
               </div>
+
             </div>
+
           ))}
+          <button className="btn btn-link" onClick={() => handleAddWorkout()}>הוסף אימון</button>
+
         </div>
+
       )}
     </div>
   );
