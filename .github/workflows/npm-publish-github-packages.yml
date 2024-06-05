@@ -44,6 +44,6 @@ jobs:
         working-directory: ./client
       - name: Publish package
         run: npm publish
-        working-directory: ./server # Adjust this if your package.json for publishing is in a different directory
+        working-directory: ./server
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
