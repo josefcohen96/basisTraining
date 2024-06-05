@@ -46,8 +46,13 @@ const TaskList = ({ userId }) => {
     } else if (taskType === 'food') {
       console.log('Navigate to tracking-food');
       navigate('/tracking-food', { state: { taskId } });
+
+    } else if (taskType === 'workout') {
+      console.log('Navigate to training');
+      navigate('/training', { state: { taskId } });
     }
   };
+
 
   if (loading) {
     return <p>Loading...</p>;

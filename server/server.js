@@ -2,9 +2,10 @@ const express = require('express');
 const cors = require('cors');
 const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');
-const multer = require('multer')
-
+const multer = require('multer');
+const logger = require('./logger'); // Importing the logger configuration
 require('dotenv').config();
+const path = require('path');
 
 const app = express();
 const port = 5000;
@@ -15,6 +16,7 @@ const upload = multer({ storage: storage });
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Create a connection pool
 const pool = new Pool({
@@ -25,18 +27,15 @@ const pool = new Pool({
   port: 5432,
 });
 
-
-
 app.post('/api/tracking', upload.array('photos', 4), async (req, res) => {
   const { user_id, date, weight, body_fat_percentage, chest, waist, thighr, thighl, armr, arml } = req.body;
   const photos = req.files;
 
   try {
-    const client = await pool.connect();
+    logger.debug('Connected to the database for tracking insertion.');
 
     const query = `INSERT INTO measurements (user_id, date, weight, body_fat_percentage, chest, waist, thighr, thighl, armr, arml, photo1, photo2, photo3, photo4)
                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *`;
-
     const values = [
       user_id,
       date,
@@ -54,25 +53,24 @@ app.post('/api/tracking', upload.array('photos', 4), async (req, res) => {
       photos[3]?.buffer,
     ];
 
-    const result = await client.query(query, values);
+    const result = await pool.query(query, values);
+    logger.info('New measurement added successfully');
 
     // Update the task status to 'Finish'
     if (req.body.task_id) {
-      console.log(req.body);
-      console.log('Updating task status to Finish', req.body.task_id);
-      await client.query(`UPDATE tasks SET task_status = 'Finish' WHERE task_id = $1`, [req.body.task_id]);
+      logger.debug('Updating task status to Finish', req.body.task_id);
+      await pool.query(`UPDATE tasks SET task_status = 'Finish' WHERE task_id = $1`, [req.body.task_id]);
     }
 
-    client.release();
     res.status(200).json({ message: 'New measurement added successfully', id: result.rows[0].id });
   } catch (error) {
-    console.error('Error inserting new measurement:', error);
+    logger.error('Error inserting new measurement:', error);
     res.status(500).json({ error: 'Database error' });
   }
 });
 
 app.post('/api/auth/register', async (req, res) => {
-  console.log('Register route');
+  logger.debug('Register route');
   const {
     name, email, password, phone, age, height, weight, trainingYears, trainingFrequency, preferredTrainingLocation,
     homeEquipment, desiredEquipment, strengthTrainingDescription, preferredFocusAreas, favoriteCardio,
@@ -83,19 +81,18 @@ app.post('/api/auth/register', async (req, res) => {
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    console.log('Connected to database');
+    logger.debug('Password hashed successfully.');
+
     try {
       const userQuery = `
         INSERT INTO users (name, email, password, role)
         VALUES ($1, $2, $3, 'user')
         RETURNING user_id, name, email, role;
       `;
-      console.log('Inserting user');
       const userValues = [name, email, hashedPassword];
       const userResult = await pool.query(userQuery, userValues);
       const userId = userResult.rows[0].user_id;
-      console.log('User inserted', userId);
-
+      logger.info('User inserted successfully with ID:', userId);
       // const detailsQuery = `
       //   INSERT INTO user_details (user_id, phone, age, height, weight, training_years, training_frequency, preferred_training_location,
       //     home_equipment, desired_equipment, strength_training_description, preferred_focus_areas, favorite_cardio, current_cardio_routine,
@@ -156,109 +153,104 @@ app.post('/api/auth/register', async (req, res) => {
         await pool.query(taskQuery, [userId, task.task_name, task.task_description, task.task_status, task.due_date, task.task_type]);
       }
 
-      console.log('Tasks inserted');
+      logger.info('Tasks inserted successfully for user ID:', userId);
       res.status(201).json(userResult.rows[0]);
     } catch (error) {
-      console.error(error);
+      logger.error('Database operation failed during user registration:', error);
       res.status(400).json({ error: error.message });
     }
   } catch (error) {
-    console.error(error.message);
+    logger.error('Error during user registration:', error.message);
     res.status(400).json({ error: error.message });
   }
 });
 
-
-
-// Login Route
 app.post('/api/auth/login', async (req, res) => {
-  console.log('Login route');
+  logger.debug('Login route');
   const { email, password } = req.body;
   try {
-    const query = 'SELECT * FROM Users WHERE email = $1';
+    const query = 'SELECT * FROM users WHERE email = $1';
     const values = [email];
     const result = await pool.query(query, values);
     const user = result.rows[0];
     if (user && await bcrypt.compare(password, user.password)) {
-      console.log('User authenticated');
+      logger.info('User authenticated successfully:', user.user_id);
       res.json({ id: user.user_id, name: user.name, email: user.email, role: user.role });
     } else {
-      console.log('Invalid credentials');
+      logger.warn('Invalid credentials provided for email:', email);
       res.status(400).json({ error: 'Invalid credentials' });
     }
   } catch (error) {
+    logger.error('Error during login:', error.message);
     res.status(500).json({ error: error.message });
   }
 });
 
-
-
 app.get('/api/tasks/:userId', async (req, res) => {
-  console.log('Get tasks for user');
+  logger.debug('Get tasks for user');
   const { userId } = req.params;
   try {
     const query = 'SELECT * FROM tasks WHERE user_id = $1';
     const values = [userId];
     const result = await pool.query(query, values);
+    logger.info('Fetched tasks for user ID:', userId);
     res.json(result.rows);
   } catch (error) {
-    console.error(error.message);
+    logger.error('Error fetching tasks for user ID:', userId, error.message);
     res.status(500).json({ error: error.message });
   }
 });
 
 app.put('/api/tasks/:taskId', async (req, res) => {
-  console.log('Update task status', req.body, req.params);
+  logger.debug('Update task status', req.body, req.params);
   const { task_status } = req.body;
   const { taskId } = req.params;
   try {
     const query = 'UPDATE tasks SET task_status = $1 WHERE task_id = $2 RETURNING *';
     const values = [task_status, taskId];
     const result = await pool.query(query, values);
+    logger.info('Task status updated successfully for task ID:', taskId);
     res.json(result.rows[0]);
-    console.log(result.rows[0]);
   } catch (error) {
-    console.error(error.message);
+    logger.error('Error updating task status for task ID:', taskId, error.message);
     res.status(500).json({ error: error.message });
   }
 });
 
 app.get('/api/tracking/:userId', async (req, res) => {
-  console.log('Get tracking metrics');
-
+  logger.debug('Get tracking metrics for user ID:', req.params.userId);
   const { userId } = req.params;
-  console.log(userId);
   try {
-    const query = 'SELECT * FROM "measurements" WHERE user_id = $1';
+    const query = 'SELECT * FROM measurements WHERE user_id = $1';
     const values = [userId];
     const result = await pool.query(query, values);
-    console.log("result tracking/userID" + result);
+    logger.info('Fetched tracking metrics for user ID:', userId);
     res.json(result.rows);
   } catch (error) {
-    console.log(error.message);
+    logger.error('Error fetching tracking metrics for user ID:', userId, error.message);
     res.status(500).json({ error: error.message });
   }
 });
 
-
 app.get('/api/latest-measurement/:userId', async (req, res) => {
+  logger.debug('Get latest measurement for user ID:', req.params.userId);
   const { userId } = req.params;
   try {
     const query = 'SELECT * FROM measurements WHERE user_id = $1 ORDER BY date DESC LIMIT 1';
     const values = [userId];
     const result = await pool.query(query, values);
+    logger.info('Fetched latest measurement for user ID:', userId);
     res.json(result.rows[0]);
   } catch (error) {
-    console.error(error.message);
+    logger.error('Error fetching latest measurement for user ID:', userId, error.message);
     res.status(500).json({ error: error.message });
   }
 });
 
 app.get('/api/workouts/:userId', async (req, res) => {
-  console.log('Fetching workouts for user');
+  logger.debug('Fetching workouts for user ID:', req.params.userId);
   const { userId } = req.params;
   try {
-    console.log('Fetching workouts for user', userId);
     const query = `
       SELECT w.workout_id, w.workout_name, w.workout_description, w.scheduled_date,
              e.exercise_name, e.exercise_description, t.trainer_exp, t.sets_to_do, t.reps_to_do, t.goal_weight,
@@ -271,7 +263,8 @@ app.get('/api/workouts/:userId', async (req, res) => {
     `;
     const values = [userId];
     const result = await pool.query(query, values);
-    console.log('Workouts fetched:', result.rows);
+    logger.info('Workouts fetched for user ID:', userId);
+
     const workouts = result.rows.reduce((acc, row) => {
       const workout = acc.find(w => w.workout_id === row.workout_id);
       const exercise = {
@@ -286,8 +279,6 @@ app.get('/api/workouts/:userId', async (req, res) => {
         reps_done: row.reps_done,
         last_set_weight: row.last_set_weight,
       };
-      console.log('Workout:', workout);
-      console.log('Exercise:', exercise);
       if (workout) {
         workout.exercises.push(exercise);
       } else {
@@ -299,147 +290,172 @@ app.get('/api/workouts/:userId', async (req, res) => {
           exercises: [exercise],
         });
       }
-      console.log('Acc:', acc);
       return acc;
     }, []);
 
     res.json(workouts);
   } catch (error) {
-    console.error('Error fetching workouts:', error);
+    logger.error('Error fetching workouts for user ID:', userId, error.message);
     res.status(500).json({ error: 'Database error' });
   }
 });
 
-
 app.get('/api/workouts/:workoutId/exercises', async (req, res) => {
-  const workoutId = req.params.workoutId;
+  logger.debug('Get exercises for workout ID:', req.params.workoutId);
+  const { workoutId } = req.params;
 
   try {
-    const result = await pool.query(`
-      SELECT e.exercise_name, e.exercise_description, t.sets_to_do, t.reps_to_do, t.goal_weight, t.manipulation, training_id
+    const query = `
+      SELECT e.exercise_name, e.exercise_description, e.video_url, t.sets_to_do, t.reps_to_do, t.goal_weight, t.manipulation, t.training_id
       FROM training t
       JOIN exercises e ON t.exercise_id = e.exercise_id
       WHERE t.workout_id = $1
-    `, [workoutId]);
-    console.log('Exercises1111111111111:', result.rows);
+    `;
+    const values = [workoutId];
+    const result = await pool.query(query, values);
+    logger.info('Fetched exercises for workout ID:', workoutId);
     res.json(result.rows);
   } catch (error) {
-    console.error('Error fetching exercises:', error);
-    res.status(500).send('Server error');
+    logger.error('Error fetching exercises for workout ID:', workoutId, error.message);
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
-
 app.post('/api/food-entry', async (req, res) => {
-  console.log('Add new food entry')
+  logger.debug('Add new food entry');
   const { user_id, description, task_id } = req.body;
 
   try {
-    const client = await pool.connect();
+    logger.debug('Connected to the database for food entry insertion.');
 
     const query = `INSERT INTO result_tracking (task_id, eating_day_free_txt)
                    VALUES ($1, $2) RETURNING *`;
-
     const values = [task_id, description];
-
-    const result = await client.query(query, values);
+    const result = await pool.query(query, values);
 
     // Update the task status to 'Finish'
     if (task_id) {
-      await client.query(`UPDATE tasks SET task_status = 'Finish' WHERE task_id = $1`, [task_id]);
+      await pool.query(`UPDATE tasks SET task_status = 'Finish' WHERE task_id = $1`, [task_id]);
     }
 
-    client.release();
+    logger.info('New food entry added successfully');
     res.status(200).json({ message: 'New food entry added successfully', id: result.rows[0].id });
   } catch (error) {
-    console.error('Error inserting new food entry:', error);
+    logger.error('Error inserting new food entry:', error.message);
     res.status(500).json({ error: 'Database error' });
   }
 });
 
-
-
 app.get('/api/exercises/:exerciseId', async (req, res) => {
+  logger.debug('Get exercise by ID:', req.params.exerciseId);
+  const { exerciseId } = req.params;
   try {
-    const { exerciseId } = req.params;
-    const exercise = await pool.query('SELECT * FROM EXERCISES WHERE exercise_id = $1', [exerciseId]);
-    res.json(exercise.rows[0]);
+    const query = 'SELECT * FROM exercises WHERE exercise_id = $1';
+    const values = [exerciseId];
+    const result = await pool.query(query, values);
+    logger.info('Fetched exercise for ID:', exerciseId);
+    res.json(result.rows[0]);
   } catch (error) {
-    console.error('Error fetching exercise:', error);
+    logger.error('Error fetching exercise for ID:', exerciseId, error.message);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
 
 app.post('/api/workouts/save', async (req, res) => {
-  try {
-    const { workoutId, exercises } = req.body;
-    console.log('Workout ID:', workoutId);
+  logger.debug('Save workout data');
+  const { workoutId, exercises } = req.body;
 
-    // Update or insert exercises for the workout in the database
+  try {
     for (const exercise of exercises) {
-      console.log('Exercise:', exercise)
-      // Perform your database operation here
-      values = [
+      const values = [
         exercise.sets_done || 0,
         exercise.reps_done || 0,
         exercise.last_set_weight || 0,
         exercise.training_id,
-        "comleted"
-      ]
-      await pool.query('UPDATE training SET sets_done = $1, reps_done = $2, last_set_weight = $3 WHERE exercise_id = $4', values);
+      ];
+      await pool.query('UPDATE training SET sets_done = $1, reps_done = $2, last_set_weight = $3 WHERE training_id = $4', values);
     }
-    console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
-    console.log(values);
-    console.log('Workout data saved successfully');
+
+    const statusUpdateValues = ['completed', workoutId];
+    await pool.query('UPDATE workouts SET status = $1 WHERE workout_id = $2', statusUpdateValues);
+
+    logger.info('Workout data saved successfully for workout ID:', workoutId);
+    const { taskId } = req.body;
+    console.log('task_id:', taskId)
+
+    if (taskId) {
+      console.log('Updating task status to Finish', taskId);
+      await pool.query(`UPDATE tasks SET task_status = 'Finish' WHERE task_id = $1`, [taskId]);
+    }
     res.status(200).json({ message: 'Workout data saved successfully' });
   } catch (error) {
-    console.error('Error saving workout data:', error);
+    logger.error('Error saving workout data for workout ID:', workoutId, error.message);
     res.status(500).json({ error: 'Failed to save workout data' });
   }
 });
 
-
-
-
-
-
-
 // ########################### ADMIN ROUTES ############################
 
-const checkAdmin = (req, res, next) => {
+const checkAdmin = async (req, res, next) => {
+  logger.debug('Check if user is an admin');
   const adminUserId = req.headers['admin-user-id'];
-  // Verify the admin user (add your logic here)
-  // if (!adminUserId) {
-  //   return res.status(401).json({ error: 'Unauthorized' });
-  // }
+  // console.log(!adminUserId, !(await isAdmin(adminUserId)))
+  if (!adminUserId || !(await isAdmin(adminUserId))) {
+    console.log('Unauthorized from checkAdmin');
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
   next();
 };
 
-app.get('/api/admin/users', checkAdmin, async (req, res) => {
+// Helper function to check if a user is an admin
+const isAdmin = async (userId) => {
   try {
-    const users = await pool.query('SELECT * FROM users where role = $1', ['user']);
-    res.json(users.rows);
+    const res = await pool.query('SELECT role FROM users WHERE user_id = $1', [userId]);
+    if (res.rows.length > 0) {
+      return res.rows[0].role === 'admin';
+    }
+    return false;
+  } catch (err) {
+    console.error('Database query error', err);
+    return false;
+  }
+};
+
+
+app.get('/api/admin/users', async (req, res) => {
+  logger.debug('Get all users for admin');
+  try {
+    const query = 'SELECT * FROM users WHERE role = $1';
+    const values = ['user'];
+    const result = await pool.query(query, values);
+    logger.info('Fetched all users for admin.');
+    res.json(result.rows);
   } catch (error) {
-    console.error('Error fetching users:', error);
+    logger.error('Error fetching users for admin:', error.message);
     res.status(500).json({ error: 'Failed to fetch users' });
   }
 });
 
 app.get('/api/admin/users/:userId/workouts', checkAdmin, async (req, res) => {
-  const userId = req.params.userId;
-  console.log('Fetching workouts for user:', userId);
-  const workouts = await pool.query('SELECT * FROM workouts WHERE user_id = $1', [userId]);
-  res.json(workouts.rows);
+  logger.debug('Get workouts for user ID:', req.params.userId);
+  const { userId } = req.params;
+  try {
+    const query = 'SELECT * FROM workouts WHERE user_id = $1';
+    const values = [userId];
+    const result = await pool.query(query, values);
+    logger.info('Fetched workouts for user ID:', userId);
+    res.json(result.rows);
+  } catch (error) {
+    logger.error('Error fetching workouts for user ID:', userId, error.message);
+    res.status(500).json({ error: 'Failed to fetch workouts' });
+  }
 });
 
-
-
 app.get('/api/admin/workouts/:workoutId/training', checkAdmin, async (req, res) => {
+  logger.debug('Get training details for workout ID:', req.params.workoutId);
+  const { workoutId } = req.params;
   try {
-    const workoutId = req.params.workoutId;
-
-    // Get training details with exercise name
-    const trainingDetails = await pool.query(`
+    const query = `
       SELECT 
         t.training_id,
         t.sets_to_do,
@@ -459,56 +475,106 @@ app.get('/api/admin/workouts/:workoutId/training', checkAdmin, async (req, res) 
         t.exercise_id = e.exercise_id
       WHERE 
         t.workout_id = $1
-    `, [workoutId]);
-
-    res.json(trainingDetails.rows);
-  } catch (err) {
-    console.error(err.message);
+    `;
+    const values = [workoutId];
+    const result = await pool.query(query, values);
+    logger.info('Fetched training details for workout ID:', workoutId);
+    res.json(result.rows);
+  } catch (error) {
+    logger.error('Error fetching training details for workout ID:', workoutId, error.message);
     res.status(500).json({ error: 'Server error' });
   }
 });
+
 app.delete('/api/admin/training/:trainingId', checkAdmin, async (req, res) => {
+  logger.debug('Delete training by ID:', req.params.trainingId);
+  const { trainingId } = req.params;
   try {
-    const { trainingId } = req.params;
-    console.log('Deleting training:', trainingId);
-    await pool.query('DELETE FROM training WHERE training_id = $1', [trainingId]);
+    const query = 'DELETE FROM training WHERE training_id = $1';
+    const values = [trainingId];
+    await pool.query(query, values);
+    logger.info('Deleted training with ID:', trainingId);
     res.status(204).send();
   } catch (error) {
-    console.error('Error deleting training:', error);
+    logger.error('Error deleting training with ID:', trainingId, error.message);
     res.status(500).json({ error: 'Server error' });
   }
 });
 
 app.put('/api/admin/training/:trainingId', checkAdmin, async (req, res) => {
+  logger.debug('Update training by ID:', req.params.trainingId);
   const { trainingId } = req.params;
   const { exercise_id, sets_to_do, reps_to_do, goal_weight, manipulation } = req.body;
 
   try {
-    await pool.query(
-      'UPDATE training SET exercise_id = $1, sets_to_do = $2, reps_to_do = $3, goal_weight = $4, manipulation = $5 WHERE training_id = $6',
-      [exercise_id, sets_to_do, reps_to_do, goal_weight, manipulation, trainingId]
-    );
+    const query = `
+      UPDATE training 
+      SET exercise_id = $1, sets_to_do = $2, reps_to_do = $3, goal_weight = $4, manipulation = $5 
+      WHERE training_id = $6
+    `;
+    const values = [exercise_id, sets_to_do, reps_to_do, goal_weight, manipulation, trainingId];
+    await pool.query(query, values);
+    logger.info('Updated training with ID:', trainingId);
     res.json({ message: 'Training updated successfully' });
-  } catch (err) {
-    console.error('Error updating training:', err);
+  } catch (error) {
+    logger.error('Error updating training with ID:', trainingId, error.message);
     res.status(500).json({ error: 'Server error' });
   }
 });
 
-
-
 app.get('/api/admin/exercises', checkAdmin, async (req, res) => {
+  logger.debug('Get all exercises for admin');
   try {
-    const exercises = await pool.query('SELECT exercise_id, exercise_name FROM exercises');
-    console.log('Exercises:', exercises.rows);
-    res.json(exercises.rows);
-  } catch (err) {
-    console.error('Error fetching exercises:', err);
+    const query = 'SELECT exercise_id, exercise_name FROM exercises';
+    const result = await pool.query(query);
+    logger.info('Fetched all exercises for admin.');
+    res.json(result.rows);
+  } catch (error) {
+    logger.error('Error fetching exercises for admin:', error.message);
     res.status(500).json({ error: 'Server error' });
+  }
+});
+
+app.post('/api/admin/users/:userId/workouts', checkAdmin, async (req, res) => {
+  const { userId } = req.params;
+  console.log('userId:', userId)
+  // logger.debug('Create new workout for user ID:', userId);
+  const { workout_name, workout_description, scheduled_date, status, training } = req.body;
+  try {
+    const workoutQuery = `
+      INSERT INTO workouts (user_id, workout_name, workout_description, status) VALUES ($1, $2, $3, 'pending') RETURNING workout_id;
+    `;
+    const workoutValues = [userId, workout_name, workout_description,];
+    const workoutResult = await pool.query(workoutQuery, workoutValues);
+    const newWorkoutId = workoutResult.rows[0].workout_id;
+    console.log('newWorkoutId:', newWorkoutId)
+    const trainingQuery = `
+      INSERT INTO training (workout_id, exercise_id, trainer_exp, sets_to_do, reps_to_do, goal_weight, manipulation, sets_done, reps_done, last_set_weight)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, 0 ,0 ,0 );
+    `;
+    for (const entry of training) {
+      const { exercise_id, sets_to_do, trainer_exp, reps_to_do, goal_weight, manipulation } = entry;
+      await pool.query(trainingQuery, [newWorkoutId, exercise_id, trainer_exp, sets_to_do, reps_to_do, goal_weight, manipulation]);
+    }
+    logger.info('New workout created successfully for user ID:', userId);
+    const taskInsertQuery = `
+          INSERT INTO tasks (user_id, task_name, task_status ,task_type, task_description, related_id)
+          VALUES ($1, $2, 'Pending', 'workout', $3, $4);
+      `;
+
+    values = [userId, workout_name, workout_description, newWorkoutId];
+    await pool.query(taskInsertQuery, values);
+    logger.info('New workout created successfully for user ID:', userId);
+    res.status(201).json({ workout_id: newWorkoutId });
+  } catch (error) {
+    logger.error('Error creating new workout for user ID:', userId, error.message);
+    res.status(500).json({ error: 'Failed to create new workout' });
   }
 });
 
 // Start the server
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  logger.info(`Server is running on port ${port}`);
 });
+
+

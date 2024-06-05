@@ -1,32 +1,14 @@
 // src/components/Navbar.js
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Nav } from 'react-bootstrap';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import '../Navbar.css';
 
 const AdminSidebar = ({ userId }) => {
-    const [incompleteTasks, setIncompleteTasks] = useState(0);
     const { logout } = useContext(AuthContext);
     const navigate = useNavigate();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-    useEffect(() => {
-        const fetchIncompleteTasks = async () => {
-            try {
-                const response = await axios.get(`http://localhost:5000/api/tasks/${userId}`);
-                const incomplete = response.data.filter(task => task.task_status === 'Pending').length;
-                setIncompleteTasks(incomplete);
-            } catch (error) {
-                console.error('Error fetching incomplete tasks:', error);
-            }
-        };
-
-        if (userId) {
-            fetchIncompleteTasks();
-        }
-    }, [userId]);
 
     const handleLogout = () => {
         logout();
@@ -56,7 +38,10 @@ const AdminSidebar = ({ userId }) => {
                         <Nav.Link href="/admin" className="nav-item">
                             <i className="bi bi-speedometer2"></i> מסך בקרה
                         </Nav.Link>
-
+                        <div className="spacer"></div>
+                        <Nav.Link as={Link} to="/login" onClick={handleLogout} className="nav-item logout">
+                            <i className="bi bi-box-arrow-right"></i> צא\י
+                        </Nav.Link>
                     </Nav>
                 </div>
             </div>

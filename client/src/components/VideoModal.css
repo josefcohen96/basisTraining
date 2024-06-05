@@ -1,0 +1,42 @@
+.modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    text-align: right; /* Right-align for Hebrew */
+  }
+  
+  .modal-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: right; /* Right-align for Hebrew */
+    width: 100%;
+  }
+  
+  .modal-body {
+    text-align: right; /* Right-align for Hebrew */
+    padding: 1rem;
+  }
+  
+  .video-container {
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  
+  .modal-body p {
+    font-size: 1rem;
+    line-height: 1.5;
+    text-align: right; /* Right-align for Hebrew */
+  }
+  
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid #dee2e6;
+    padding: 1rem;
+  }
+  
+  .modal-footer .btn {
+    margin-left: 0.5rem;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+  }
+  

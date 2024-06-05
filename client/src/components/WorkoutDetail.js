@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, useLocation , useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Card, Form, Button } from 'react-bootstrap';
+import VideoModal from './VideoModal';
 import './WorkoutDetail.css';
 
 const WorkoutDetail = () => {
@@ -11,7 +12,12 @@ const WorkoutDetail = () => {
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [actualData, setActualData] = useState([]);
   const [totalExercises, setTotalExercises] = useState(0);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedExercise, setSelectedExercise] = useState(null);
   const navigate = useNavigate();
+  const { state } = useLocation();
+
+  const taskId = state?.task_id; // Extract task_id from state
 
   useEffect(() => {
     const fetchExercises = async () => {
@@ -44,7 +50,6 @@ const WorkoutDetail = () => {
         count -= 1;
       }
     }
-    console.log("count")
     return count;
   };
 
@@ -58,27 +63,38 @@ const WorkoutDetail = () => {
   };
 
   const handleNextExercise = () => {
-    setCurrentExerciseIndex((prevIndex) => prevIndex + (exercises[prevIndex].manipulation === 'super set' ? 2 : 1));
-    console.log("current", currentExerciseIndex)
+    const nextIndex = currentExerciseIndex + (exercises[currentExerciseIndex]?.manipulation === 'super set' ? 2 : 1);
+    setCurrentExerciseIndex(nextIndex);
   };
 
   const handlePreviousExercise = () => {
-    setCurrentExerciseIndex((prevIndex) => prevIndex - (exercises[prevIndex - 1]?.manipulation === 'super set' ? 2 : 1));
-    console.log("current", currentExerciseIndex)
+    const prevIndex = currentExerciseIndex - (exercises[currentExerciseIndex - 1]?.manipulation === 'super set' ? 2 : 1);
+    setCurrentExerciseIndex(prevIndex);
   };
 
   const handleFinishWorkout = async () => {
     try {
-      console.log(exercises);
       await axios.post('http://localhost:5000/api/workouts/save', {
         workoutId,
+        taskId, // Include task_id here
+
         exercises: actualData,
-        
       });
       navigate('/dashboard');
     } catch (error) {
       console.error('Error finishing workout:', error);
     }
+  };
+
+  const handleShowModal = (exercise) => {
+    console.log('Exercise:', exercise);
+    setSelectedExercise(exercise);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedExercise(null);
   };
 
   const currentExercise = exercises[currentExerciseIndex];
@@ -97,23 +113,27 @@ const WorkoutDetail = () => {
       <Card className="exercise-card">
         <Card.Body>
           <Card.Title>
-            <Link to={`/exercise-video/${currentExercise.exercise_id}`} className="card-title-link">
+            <span
+              className="card-title-link"
+              style={{ cursor: 'pointer', color: 'blue' }}
+              onClick={() => handleShowModal(currentExercise)}
+            >
               {currentExercise.exercise_name}
-            </Link>
+            </span>
           </Card.Title>
           <div className="exercise-info">
             <div className="left-column">
               <Card.Text>{currentExercise.exercise_description}</Card.Text>
             </div>
             <div className="right-column">
-              <p><strong>מניפולציה:</strong> {currentExercise.manipulation}</p>
+              <p><strong>Manipulation:</strong> {currentExercise.manipulation}</p>
             </div>
           </div>
           <div className="form-row">
             <div className="form-group-left">
-              <p><strong>מספר סטים:</strong> {currentExercise.sets_to_do}</p>
+              <p><strong>Sets to do:</strong> {currentExercise.sets_to_do}</p>
               <Form.Group className="form-group">
-                <Form.Label>סטים</Form.Label>
+                <Form.Label>Sets done</Form.Label>
                 <Form.Control
                   type="number"
                   name="sets_done"
@@ -123,9 +143,9 @@ const WorkoutDetail = () => {
               </Form.Group>
             </div>
             <div className="form-group-right">
-              <p><strong>מספר חזרות:</strong> {currentExercise.reps_to_do}</p>
+              <p><strong>Reps to do:</strong> {currentExercise.reps_to_do}</p>
               <Form.Group className="form-group">
-                <Form.Label>חזרות</Form.Label>
+                <Form.Label>Reps done</Form.Label>
                 <Form.Control
                   type="number"
                   name="reps_done"
@@ -136,7 +156,7 @@ const WorkoutDetail = () => {
             </div>
           </div>
           <Form.Group className="form-group">
-            <Form.Label>משקל של סט אחרון</Form.Label>
+            <Form.Label>Last set weight</Form.Label>
             <Form.Control
               type="number"
               name="last_set_weight"
@@ -147,23 +167,27 @@ const WorkoutDetail = () => {
           {currentExercise.manipulation === 'super set' && nextExercise && (
             <Card.Body>
               <Card.Title>
-                <Link to={`/exercise-video/${nextExercise.exercise_id}`} className="card-title-link">
+                <span
+                  className="card-title-link"
+                  style={{ cursor: 'pointer', color: 'blue' }}
+                  onClick={() => handleShowModal(nextExercise)}
+                >
                   {nextExercise.exercise_name}
-                </Link>
+                </span>
               </Card.Title>
               <div className="exercise-info">
                 <div className="left-column">
                   <Card.Text>{nextExercise.exercise_description}</Card.Text>
                 </div>
                 <div className="right-column">
-                  {/* <p><strong>מניפולציה:</strong> {nextExercise.manipulation}</p> */}
+                  {/* <p><strong>Manipulation:</strong> {nextExercise.manipulation}</p> */}
                 </div>
               </div>
               <div className="form-row">
                 <div className="form-group-left">
-                  <p><strong>מספר סטים:</strong> {nextExercise.sets_to_do}</p>
+                  <p><strong>Sets to do:</strong> {nextExercise.sets_to_do}</p>
                   <Form.Group className="form-group">
-                    <Form.Label>סטים</Form.Label>
+                    <Form.Label>Sets done</Form.Label>
                     <Form.Control
                       type="number"
                       name="sets_done"
@@ -173,9 +197,9 @@ const WorkoutDetail = () => {
                   </Form.Group>
                 </div>
                 <div className="form-group-right">
-                  <p><strong>מספר חזרות:</strong> {nextExercise.reps_to_do}</p>
+                  <p><strong>Reps to do:</strong> {nextExercise.reps_to_do}</p>
                   <Form.Group className="form-group">
-                    <Form.Label>חזרות</Form.Label>
+                    <Form.Label>Reps done</Form.Label>
                     <Form.Control
                       type="number"
                       name="reps_done"
@@ -186,7 +210,7 @@ const WorkoutDetail = () => {
                 </div>
               </div>
               <Form.Group className="form-group">
-                <Form.Label>משקל</Form.Label>
+                <Form.Label>Last set weight</Form.Label>
                 <Form.Control
                   type="number"
                   name="last_set_weight"
@@ -225,6 +249,13 @@ const WorkoutDetail = () => {
       <p>
         Exercise {currentExerciseIndex + 1} of {totalExercises}
       </p>
+      {selectedExercise && (
+        <VideoModal
+          show={showModal}
+          onHide={handleCloseModal}
+          exercise={selectedExercise}
+        />
+      )}
     </div>
   );
 };

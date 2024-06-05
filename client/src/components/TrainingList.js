@@ -1,14 +1,20 @@
 // src/components/TrainingList.js
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Card, Button } from 'react-bootstrap';
 import './TrainingList.css';
 
+
+
 const TrainingList = ({ workout }) => {
+  const location = useLocation();
+  const taskId = location.state?.taskId;
   const navigate = useNavigate();
 
   const handleStartWorkout = () => {
-    navigate(`/start-workout/${workout.workout_id}`);
+    navigate(`/start-workout/${workout.workout_id}`, {
+      state: { task_id: taskId },
+    });
   };
 
   const handleWatchWorkout = () => {
