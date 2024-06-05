@@ -42,8 +42,10 @@ jobs:
       - name: Install dependencies for client
         run: npm ci
         working-directory: ./client
-      - name: Publish package
-        run: npm publish
+      - name: Publish package to GitHub Packages
+        run: npm publish --registry=https://npm.pkg.github.com/
         working-directory: ./server
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Restore default npm registry
+        run: npm config set registry https://registry.npmjs.org/
