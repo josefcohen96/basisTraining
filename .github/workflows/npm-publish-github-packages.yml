@@ -34,18 +34,16 @@ jobs:
           node-version: 20.11.0
       - name: Configure npm for GitHub Packages
         run: |
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
-          npm config set registry https://npm.pkg.github.com/
+          echo "@josefcohen96:registry=https://npm.pkg.github.com" > ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
       - name: Install dependencies for server
         run: npm ci
         working-directory: ./server
       - name: Install dependencies for client
         run: npm ci
         working-directory: ./client
-      - name: Reset npm registry to default
-        run: npm config set registry https://registry.npmjs.org/
       - name: Publish package to GitHub Packages
-        run: npm publish --registry=https://npm.pkg.github.com/
+        run: npm publish --access public
         working-directory: ./server
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
