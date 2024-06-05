@@ -1,4 +1,23 @@
 {
+  "name": "server",
+  "version": "1.0.0",
+  "description": "A brief description of your package",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/josefcohen96/basisTraining.git"
+  },
+  "keywords": [],
+  "author": "Your Name",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/josefcohen96/basisTraining/issues"
+  },
+  "homepage": "https://github.com/josefcohen96/basisTraining",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",

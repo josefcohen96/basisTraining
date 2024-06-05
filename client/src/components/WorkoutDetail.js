@@ -77,7 +77,6 @@ const WorkoutDetail = () => {
       await axios.post('http://localhost:5000/api/workouts/save', {
         workoutId,
         taskId, // Include task_id here
-
         exercises: actualData,
       });
       navigate('/dashboard');
