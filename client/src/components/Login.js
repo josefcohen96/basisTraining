@@ -8,6 +8,7 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
 
@@ -18,19 +19,20 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    console.log("reactURL",process.env.REACT_APP_API_URL);
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', { email, password }, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/login`, { email, password }, {
+
       });
       console.log('Login Success:', response.data);
 
-      login(response.data);
+      login(response.data, rememberMe); // Pass the rememberMe flag
       console.log("navigate to dashboard");
       navigate('/dashboard');
     } catch (error) {
       console.error(error);
+      setError('Login failed. Please check your email and password.');
     }
   };
 
@@ -54,6 +56,7 @@ const Login = () => {
             </div>
             <Link to="/forgot-password" className="forgot-password">שכחת סיסמא?</Link>
           </div>
+          {error && <div className="alert alert-danger">{error}</div>}
           <button type="submit" className="btn">התחבר</button>
         </form>
         <div className="text-center mt-3">
