@@ -35,9 +35,9 @@ const Login = () => {
   };
 
   return (
-    <div className="container d-flex justify-content-center align-items-center vh-100">
-      <div className="form-container col-md-4">
-        <h2 className="text-center">כניסה</h2>
+    <div className="container">
+      <div className="form-container">
+        <h2>כניסה</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="email">אימייל</label>
@@ -54,10 +54,10 @@ const Login = () => {
             </div>
             <Link to="/forgot-password" className="forgot-password">שכחת סיסמא?</Link>
           </div>
-          <button type="submit" className="btn btn-primary btn-block">התחבר</button>
+          <button type="submit" className="btn">התחבר</button>
         </form>
         <div className="text-center mt-3">
-          עוד לא נרשמת ? <Link to="/register">הרשם</Link>
+          עוד לא נרשמת ? <Link to="/register" className="link">הרשם</Link>
         </div>
       </div>
     </div>

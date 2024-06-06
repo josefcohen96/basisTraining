@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import './Register.css'; // Import the CSS file
+import SignaturePad from 'react-signature-canvas';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+import './Register.css';
 import { Link } from 'react-router-dom';
 
 const Register = () => {
-  const [step, setStep] = useState(1);  // Track current step
+  const [step, setStep] = useState(1); // Track current step
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -42,12 +45,28 @@ const Register = () => {
     longTermGoals: '',
     motivationLevel: '',
     commitmentDeclaration: '',
-    additionalNotes: ''
+    additionalNotes: '',
+    medicalStatement: {
+      question1: '',
+      question2: '',
+      question3: '',
+      question4: '',
+      question5: '',
+      question6: '',
+      question7: '',
+      question8: '',
+      question9: '',
+      question10: ''
+    },
+    signature: ''
   });
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [mailingAccepted, setMailingAccepted] = useState(false);
+  const signaturePadRef = useRef(null);
+  const formRef = useRef(null);
 
   useEffect(() => {
-    // Clear session storage when the component mounts
-    sessionStorage.clear();
+    sessionStorage.clear(); // Clear session storage when the component mounts
   }, []);
 
   const navigate = useNavigate();
@@ -64,26 +83,53 @@ const Register = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+    if (name.startsWith('medicalStatement.')) {
+      const key = name.split('.')[1];
+      setFormData((prevData) => ({
+        ...prevData,
+        medicalStatement: {
+          ...prevData.medicalStatement,
+          [key]: value
+        }
+      }));
+    } else {
+      setFormData((prevData) => ({ ...prevData, [name]: value }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!termsAccepted) {
+      alert("You must accept the terms to register.");
+      return;
+    }
+    const signature = signaturePadRef.current.toDataURL(); // Get the signature as a data URL
+    const finalData = { ...formData, signature, termsAccepted, mailingAccepted };
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/register', formData);
+      const response = await axios.post('http://localhost:5000/api/auth/register', finalData);
       console.log(response.data);
+      generatePDF(); // Call the function to generate the PDF
       navigate('/login'); // Redirect to login after successful registration
     } catch (error) {
       console.error(error);
     }
   };
 
+  const generatePDF = async () => {
+    const input = formRef.current;
+    const canvas = await html2canvas(input);
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF();
+    pdf.addImage(imgData, 'PNG', 0, 0);
+    pdf.save('medical_statement.pdf');
+  };
+
   return (
     <div className="d-flex justify-content-center align-items-center vh-100">
       <div className="col-md-8">
-        <div className="form-container">
+        <div className="form-container" ref={formRef}>
           <h2 className="text-center">הרשמה</h2>
-          {/* {step === 1 && ( */}
+          {step === 1 && (
             <form onSubmit={handleNext}>
               <div className="form-group">
                 <label htmlFor="name">שם</label>
@@ -110,8 +156,8 @@ const Register = () => {
                 כבר נרשמת ? <Link to="/login">התחבר</Link>
               </div>
             </form>
-          {/* )} */}
-          {/* {step === 2 && (
+          )}
+          {step === 2 && (
             <form onSubmit={handleNext}>
               <div className="form-group">
                 <label htmlFor="height">גובה</label>
@@ -266,17 +312,82 @@ const Register = () => {
               <button type="submit" className="btn btn-primary btn-block">הבא</button>
               <button type="button" className="btn btn-secondary btn-block" onClick={handleBack}>חזור</button>
             </form>
-          )} */}
-          {/* {step === 8 && ( */}
+          )}
+          {step === 8 && (
+            <form onSubmit={handleNext}>
+              <div className="form-group">
+                <label htmlFor="medicalStatement.question1">האם יש לך היסטוריה משפחתית של מחלות לב?</label>
+                <textarea className="form-control" id="medicalStatement.question1" name="medicalStatement.question1" value={formData.medicalStatement.question1} onChange={handleChange} required></textarea>
+              </div>
+              <div className="form-group">
+                <label htmlFor="medicalStatement.question2">האם אתה סובל מסוכרת?</label>
+                <textarea className="form-control" id="medicalStatement.question2" name="medicalStatement.question2" value={formData.medicalStatement.question2} onChange={handleChange} required></textarea>
+              </div>
+              <div className="form-group">
+                <label htmlFor="medicalStatement.question3">האם יש לך בעיות נשימה?</label>
+                <textarea className="form-control" id="medicalStatement.question3" name="medicalStatement.question3" value={formData.medicalStatement.question3} onChange={handleChange} required></textarea>
+              </div>
+              <div className="form-group">
+                <label htmlFor="medicalStatement.question4">האם יש לך בעיות כליות?</label>
+                <textarea className="form-control" id="medicalStatement.question4" name="medicalStatement.question4" value={formData.medicalStatement.question4} onChange={handleChange} required></textarea>
+              </div>
+              <div className="form-group">
+                <label htmlFor="medicalStatement.question5">האם יש לך בעיות בכבד?</label>
+                <textarea className="form-control" id="medicalStatement.question5" name="medicalStatement.question5" value={formData.medicalStatement.question5} onChange={handleChange} required></textarea>
+              </div>
+              <button type="submit" className="btn btn-primary btn-block">הבא</button>
+              <button type="button" className="btn btn-secondary btn-block" onClick={handleBack}>חזור</button>
+            </form>
+          )}
+          {step === 9 && (
+            <form onSubmit={handleNext}>
+              <div className="form-group">
+                <label htmlFor="medicalStatement.question6">האם יש לך בעיות במערכת העצבים?</label>
+                <textarea className="form-control" id="medicalStatement.question6" name="medicalStatement.question6" value={formData.medicalStatement.question6} onChange={handleChange} required></textarea>
+              </div>
+              <div className="form-group">
+                <label htmlFor="medicalStatement.question7">האם אתה סובל ממיגרנות כרוניות?</label>
+                <textarea className="form-control" id="medicalStatement.question7" name="medicalStatement.question7" value={formData.medicalStatement.question7} onChange={handleChange} required></textarea>
+              </div>
+              <div className="form-group">
+                <label htmlFor="medicalStatement.question8">האם יש לך בעיות הורמונליות?</label>
+                <textarea className="form-control" id="medicalStatement.question8" name="medicalStatement.question8" value={formData.medicalStatement.question8} onChange={handleChange} required></textarea>
+              </div>
+              <div className="form-group">
+                <label htmlFor="medicalStatement.question9">האם עברת ניתוחים גדולים בעבר?</label>
+                <textarea className="form-control" id="medicalStatement.question9" name="medicalStatement.question9" value={formData.medicalStatement.question9} onChange={handleChange} required></textarea>
+              </div>
+              <div className="form-group">
+                <label htmlFor="medicalStatement.question10">האם יש לך מגבלות פיזיות כלשהן?</label>
+                <textarea className="form-control" id="medicalStatement.question10" name="medicalStatement.question10" value={formData.medicalStatement.question10} onChange={handleChange} required></textarea>
+              </div>
+              <button type="submit" className="btn btn-primary btn-block">הבא</button>
+              <button type="button" className="btn btn-secondary btn-block" onClick={handleBack}>חזור</button>
+            </form>
+          )}
+          {step === 10 && (
             <form onSubmit={handleSubmit}>
               <div className="form-group">
                 <label htmlFor="additionalNotes">דברים שתרצה להוסיף?</label>
                 <textarea className="form-control" id="additionalNotes" name="additionalNotes" value={formData.additionalNotes} onChange={handleChange}></textarea>
               </div>
+              <div className="form-group">
+                <label>חתימה:</label>
+                <SignaturePad ref={signaturePadRef} canvasProps={{ className: 'signatureCanvas' }} />
+                <button type="button" className="btn btn-secondary btn-block mt-2" onClick={() => signaturePadRef.current.clear()}>נקה חתימה</button>
+              </div>
+              <div className="form-group form-check">
+                <input type="checkbox" className="form-check-input" id="termsAccepted" checked={termsAccepted} onChange={(e) => setTermsAccepted(e.target.checked)} required />
+                <label className="form-check-label" htmlFor="termsAccepted">קראתי את התקנון ואני מקבל את התנאים</label>
+              </div>
+              <div className="form-group form-check">
+                <input type="checkbox" className="form-check-input" id="mailingAccepted" checked={mailingAccepted} onChange={(e) => setMailingAccepted(e.target.checked)} />
+                <label className="form-check-label" htmlFor="mailingAccepted">אני מסכים לקבל דיוור</label>
+              </div>
               <button type="submit" className="btn btn-primary btn-block">הרשמה</button>
               <button type="button" className="btn btn-secondary btn-block" onClick={handleBack}>חזור</button>
             </form>
-          {/* )} */}
+          )}
         </div>
       </div>
     </div>

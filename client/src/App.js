@@ -16,9 +16,13 @@ import MedicalStatementForm from './components/MedicalStatementForm';
 import Training from './components/Training';
 import WorkoutDetail from './components/WorkoutDetail';
 import ExerciseDetail from './components/ExerciseDetail';
-import AdminDashboard from './components/admin/AdminDashboard'; // Correct path for AdminDashboard
+import TrainersMange from './components/admin/TrainersMange'; // Correct path for AdminDashboard
 import NotAuthorized from './components/NotAuthorized'; // Correct path for NotAuthorized
 import AdminSidebar from './components/admin/AdminSideBar';
+import AdminDashBoard from './components/admin/AdminDashboard';
+import UserInfo from './components/admin/UserInfo';
+import ExercisesList from './components/ExercisesList'; // Adjust the path as necessary
+
 
 function App() {
   return (
@@ -52,10 +56,15 @@ const Main = () => {
             <Route path="/training" element={<Training />} />
             <Route path="/start-workout/:workoutId" element={<WorkoutDetail />} />
             <Route path="/exercise/:exerciseId" element={<ExerciseDetail />} />
+            <Route path="/exericses" element={<ExercisesList />} />
+
           </Route>
           <Route path="/not-authorized" element={<NotAuthorized />} />
           <Route element={<AdminRoute />}>
-            <Route path="/admin" element={<AdminDashboard />} /> {/* Admin route */}
+            <Route path="/admin" element={<AdminDashBoard />} /> {/* Admin route */}
+            <Route path="/TrainersMange" element={<TrainersMange />} /> {/* Admin route */}
+            <Route path="/user/:userId" element={<UserInfo />} />
+
           </Route>
         </Routes>
       </div>

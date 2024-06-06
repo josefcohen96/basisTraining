@@ -1,102 +1,77 @@
-/* Global styles */
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f7f7f7;
-  margin: 0;
-  padding: 0;
-  direction: rtl; /* Support for Hebrew right-to-left text */
-}
-
-/* Centering the form container */
-.form-container {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  margin: 50px auto;
+  background-color: #f8f9fa;
 }
 
 .d-flex {
-  display: flex;
+  height: 100vh;
 }
 
-.justify-content-center {
-  justify-content: center;
+.form-container {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.align-items-center {
-  align-items: center;
+.form-container h2 {
+  margin-bottom: 20px;
 }
 
-/* Form styling */
 .form-group {
   margin-bottom: 15px;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 5px;
   font-weight: bold;
+  margin-bottom: 5px;
 }
 
-.form-group input,
-.form-group textarea {
+.form-control {
   width: 100%;
   padding: 10px;
-  border: 1px solid #ddd;
   border-radius: 5px;
-  box-sizing: border-box;
+  border: 1px solid #ced4da;
 }
 
-.form-group textarea {
-  resize: vertical;
-  min-height: 100px;
-}
-
-.btn-primary, .btn-secondary {
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  display: block;
+.btn-block {
   width: 100%;
-  margin-top: 20px;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  font-size: 16px;
 }
 
 .btn-primary {
   background-color: #007bff;
-}
-
-.btn-primary:hover {
-  background-color: #0056b3;
+  color: #ffffff;
 }
 
 .btn-secondary {
   background-color: #6c757d;
+  color: #ffffff;
 }
 
-.btn-secondary:hover {
-  background-color: #5a6268;
+.btn-secondary.mt-2 {
+  margin-top: 10px;
 }
 
-.text-center {
-  text-align: center;
+.form-check-label {
+  margin-left: 5px;
 }
 
-.vh-100 {
-  min-height: 100vh;
+.form-check-input {
+  margin-right: 5px;
 }
 
-.col-md-4,
-.col-md-8 {
-  flex: 0 0 auto;
+.text-center.mt-3 {
+  margin-top: 20px;
 }
 
-.col-md-4 {
-  width: 33.333333%;
-}
-
-.col-md-8 {
-  width: 66.666667%;
+.signatureCanvas {
+  width: 100%;
+  height: 150px;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  margin-top: 10px;
 }

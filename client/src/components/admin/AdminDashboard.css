@@ -1,57 +1,22 @@
 /* AdminDashboard.css */
-
 .container {
   display: flex;
-  justify-content: space-between; /* Ensures space between the two sections */
-  align-items: flex-start; /* Aligns items at the top */
+  flex-direction: column;
+  align-items: center;
   padding: 20px;
-}
-
-.user-section, .workouts-section {
-  flex: 1; /* Makes each section take equal space */
-  margin: 10px; /* Adds some space around each section */
-}
-
-.user-section {
-  max-width: 300px; /* Adjust based on your layout needs */
-}
-
-.workouts-section {
-  text-align: center;
-  flex-grow: 3; /* Allows the workout section to take more space */
-  width: auto;
-}
-
-.add-exercise-section {
-  text-align: right; /* Aligns text to the right */
-  margin-left: auto; /* Pushes the section to the right */
-}
-
-.add-exercise-section label {
-  display: block; /* Ensures labels are on their own line */
-  margin-bottom: 5px; /* Adds some space below each label */
-}
-
-.add-exercise-section input,
-.add-exercise-section select,
-.add-exercise-section button {
-  display: block; /* Ensures inputs and buttons are on their own line */
-  width: 100%; /* Makes inputs and buttons take full width */
-  margin-bottom: 10px; /* Adds some space below each input/button */
 }
 
 .user-list {
   position: absolute;
   background-color: white;
   border: 1px solid #ccc;
-  width: 15%; /* Adjust width to match the input field */
+  width: 200px;
   max-height: 200px;
   overflow-y: auto;
   z-index: 1000;
   list-style: none;
   padding-left: 0;
-  top: 20%; /* Position the list directly below the input */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow for better visibility */
+  margin-top: 5px;
 }
 
 .user-list li {
@@ -61,4 +26,21 @@
 
 .user-list li:hover {
   background-color: #f0f0f0;
+}
+
+.section {
+  margin-top: 20px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.card {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.card-body {
+  padding: 10px;
 }

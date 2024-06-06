@@ -35,7 +35,7 @@ jobs:
       - name: Configure npm for GitHub Packages
         run: |
           echo "@josefcohen96:registry=https://npm.pkg.github.com" > ~/.npmrc
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GH_PAT }}" >> ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GH_PAT }}">> ~/.npmrc
       - name: Install dependencies for server
         run: npm ci
         working-directory: ./server

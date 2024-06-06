@@ -76,7 +76,8 @@ app.post('/api/auth/register', async (req, res) => {
     homeEquipment, desiredEquipment, strengthTrainingDescription, preferredFocusAreas, favoriteCardio,
     currentCardioRoutine, injuries, highestWeight, favoriteFoods, dislikedFoods, foodTrackingMethod, pastDiets,
     dailyNutrition, weekendNutrition, favoriteRecipes, alcoholConsumption, medications, sleepHours, currentJob,
-    activityLevel, sportsParticipation, mirrorReflection, longTermGoals, motivationLevel, commitmentDeclaration, additionalNotes
+    activityLevel, sportsParticipation, mirrorReflection, longTermGoals, motivationLevel, commitmentDeclaration,
+    additionalNotes, medicalStatement, signature, termsAccepted, mailingAccepted
   } = req.body;
 
   try {
@@ -93,23 +94,23 @@ app.post('/api/auth/register', async (req, res) => {
       const userResult = await pool.query(userQuery, userValues);
       const userId = userResult.rows[0].user_id;
       logger.info('User inserted successfully with ID:', userId);
-      // const detailsQuery = `
-      //   INSERT INTO user_details (user_id, phone, age, height, weight, training_years, training_frequency, preferred_training_location,
-      //     home_equipment, desired_equipment, strength_training_description, preferred_focus_areas, favorite_cardio, current_cardio_routine,
-      //     injuries, highest_weight, favorite_foods, disliked_foods, food_tracking_method, past_diets, daily_nutrition, weekend_nutrition,
-      //     favorite_recipes, alcohol_consumption, medications, sleep_hours, current_job, activity_level, sports_participation,
-      //     mirror_reflection, long_term_goals, motivation_level, commitment_declaration, additional_notes)
-      //   VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34);
-      // `;
-      // const detailsValues = [
-      //   userId, phone, age, height, weight, trainingYears, trainingFrequency, preferredTrainingLocation, homeEquipment, desiredEquipment,
-      //   strengthTrainingDescription, preferredFocusAreas, favoriteCardio, currentCardioRoutine, injuries, highestWeight, favoriteFoods, dislikedFoods, foodTrackingMethod,
-      //   pastDiets, dailyNutrition, weekendNutrition, favoriteRecipes, alcoholConsumption, medications, sleepHours, currentJob, activityLevel, sportsParticipation,
-      //   mirrorReflection, longTermGoals, motivationLevel, commitmentDeclaration, additionalNotes
-      // ];
+      const detailsQuery = `
+        INSERT INTO user_details (user_id, phone, age, height, weight, training_years, training_frequency, preferred_training_location,
+          home_equipment, desired_equipment, strength_training_description, preferred_focus_areas, favorite_cardio, current_cardio_routine,
+          injuries, highest_weight, favorite_foods, disliked_foods, food_tracking_method, past_diets, daily_nutrition, weekend_nutrition,
+          favorite_recipes, alcohol_consumption, medications, sleep_hours, current_job, activity_level, sports_participation,
+          mirror_reflection, long_term_goals, motivation_level, commitment_declaration, additional_notes, medical_statement, signature, terms_accepted, mailing_accepted)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38);
+      `;
+      const detailsValues = [
+        userId, phone, age, height, weight, trainingYears, trainingFrequency, preferredTrainingLocation, homeEquipment, desiredEquipment,
+        strengthTrainingDescription, preferredFocusAreas, favoriteCardio, currentCardioRoutine, injuries, highestWeight, favoriteFoods, dislikedFoods, foodTrackingMethod,
+        pastDiets, dailyNutrition, weekendNutrition, favoriteRecipes, alcoholConsumption, medications, sleepHours, currentJob, activityLevel, sportsParticipation,
+        mirrorReflection, longTermGoals, motivationLevel, commitmentDeclaration, additionalNotes, JSON.stringify(medicalStatement), signature, termsAccepted, mailingAccepted
+      ];
 
-      // await pool.query(detailsQuery, detailsValues);
-      // console.log('User details inserted');
+      await pool.query(detailsQuery, detailsValues);
+      console.log('User details inserted');
 
       // Define the tasks
       const tasks = [
@@ -118,28 +119,28 @@ app.post('/api/auth/register', async (req, res) => {
           task_description: 'This is your first welcome task. Get familiar with our platform.',
           task_status: 'Pending',
           task_type: 'food',
-          due_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 1 week from now
+          due_date: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000) // 1 day from now
         },
         {
           task_name: 'יומן תזונה יום שני',
           task_description: 'This is your second welcome task. Complete your profile.',
           task_status: 'Pending',
           task_type: 'food',
-          due_date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000) // 2 weeks from now
+          due_date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000) // 2 days from now
         },
         {
           task_name: 'יומן תזונה יום שלישי',
           task_description: 'This is your third welcome task. Set your fitness goals.',
           task_status: 'Pending',
           task_type: 'food',
-          due_date: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000) // 3 weeks from now
+          due_date: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000) // 3 days from now
         },
         {
           task_name: 'מדידת היקפים',
           task_description: 'This is your fourth welcome task. Start tracking your progress.',
           task_status: 'Pending',
           task_type: 'measure',
-          due_date: new Date(Date.now() + 28 * 24 * 60 * 60 * 1000) // 4 weeks from now
+          due_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 1 weeks from now
         }
       ];
 
@@ -394,6 +395,19 @@ app.post('/api/workouts/save', async (req, res) => {
   }
 });
 
+app.get('/api/admin/exercises', async (req, res) => {
+  logger.debug('Get all exercises for admin');
+  try {
+    const query = 'SELECT exercise_id, exercise_name FROM exercises';
+    const result = await pool.query(query);
+    logger.info('Fetched all exercises for admin.');
+    res.json(result.rows);
+  } catch (error) {
+    logger.error('Error fetching exercises for admin:', error.message);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // ########################### ADMIN ROUTES ############################
 
 const checkAdmin = async (req, res, next) => {
@@ -522,18 +536,7 @@ app.put('/api/admin/training/:trainingId', checkAdmin, async (req, res) => {
   }
 });
 
-app.get('/api/admin/exercises', checkAdmin, async (req, res) => {
-  logger.debug('Get all exercises for admin');
-  try {
-    const query = 'SELECT exercise_id, exercise_name FROM exercises';
-    const result = await pool.query(query);
-    logger.info('Fetched all exercises for admin.');
-    res.json(result.rows);
-  } catch (error) {
-    logger.error('Error fetching exercises for admin:', error.message);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
+
 
 app.post('/api/admin/users/:userId/workouts', checkAdmin, async (req, res) => {
   const { userId } = req.params;
@@ -569,6 +572,62 @@ app.post('/api/admin/users/:userId/workouts', checkAdmin, async (req, res) => {
   } catch (error) {
     logger.error('Error creating new workout for user ID:', userId, error.message);
     res.status(500).json({ error: 'Failed to create new workout' });
+  }
+});
+
+
+app.post('/api/admin/approved_emails', checkAdmin, async (req, res) => {
+  logger.debug('Add new approved email');
+  const { email } = req.body;
+  try {
+    const query = 'INSERT INTO approved_emails (email) VALUES ($1)';
+    const values = [email];
+    await pool.query(query, values);
+    logger.info('New approved email added successfully');
+    res.status(201).json({ message: 'New approved email added successfully' });
+  } catch (error) {
+    logger.error('Error adding new approved email:', error.message);
+    res.status(500).json({ error: 'Failed to add new approved email' });
+  }
+});
+
+app.post('/api/admin/exercises', upload.single('exercise_video'), async (req, res) => {
+  try {
+    const { exercise_name, exercise_area, exercise_description } = req.body;
+    const exercise_video = req.file ? req.file.path : null;
+
+    const query = `
+      INSERT INTO exercises (exercise_name, area, exercise_description, video_url)
+      VALUES ($1, $2, $3, $4) RETURNING *;
+    `;
+    const values = [exercise_name, exercise_area, exercise_description, exercise_video];
+
+    const result = await pool.query(query, values);
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error('Error adding exercise:', err);
+    res.status(500).json({ error: 'Failed to add exercise' });
+  }
+});
+
+// generate function to handle       await axios.post(`http://localhost:5000/api/users/${userId}/nutrition`, formData,
+app.post('/api/users/:userId/nutrition', upload.single('file'), async (req, res) => {
+  const { userId } = req.params;
+  const { plan_name, plan_description } = req.body;
+  const file = req.file;
+
+  try {
+    const query = `
+      INSERT INTO nutrition_plans (user_id, plan_name, plan_description, file)
+      VALUES ($1, $2, $3, $4) RETURNING *;
+    `;
+    const values = [userId, plan_name, plan_description, file?.path];
+
+    const result = await pool.query(query, values);
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error('Error adding nutrition plan:', err);
+    res.status(500).json({ error: 'Failed to add nutrition plan' });
   }
 });
 

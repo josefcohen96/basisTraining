@@ -4,6 +4,8 @@ import { Nav, Badge } from 'react-bootstrap';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import './Navbar.css';
 
 const Sidebar = ({ userId }) => {
@@ -57,17 +59,30 @@ const Sidebar = ({ userId }) => {
               <i className="bi bi-speedometer2"></i> מסך בקרה
             </Nav.Link>
             <Nav.Link href="/tasks" className="nav-item">
-              <i className="bi bi-list-task"></i> משימות {incompleteTasks > 0 && <Badge bg="danger">{incompleteTasks}</Badge>}
+              <i class="bi bi-alarm"></i> משימות {incompleteTasks > 0 && <Badge bg="danger">{incompleteTasks}</Badge>}
             </Nav.Link>
             <Nav.Link href="/training" className="nav-item">
               <i className="bi bi-bar-chart"></i> אימונים
+            </Nav.Link>
+            <Nav.Link href="/exericses" className="nav-item">
+              <i class="bi bi-card-list"></i> מאגר תרגילים
+            </Nav.Link>
+            <Nav.Link href="/naturation-menu" className="nav-item">
+              <i className="bi bi-book"></i> תפריט תזונה
             </Nav.Link>
             <Nav.Link href="/tracking-history" className="nav-item">
               <i className="bi bi-rulers"></i> היקפים
             </Nav.Link>
             <Nav.Link href="/recipes" className="nav-item">
-              <i className="bi bi-book"></i> מתכונים
+              <i class="bi bi-cookie"></i> מתכונים
             </Nav.Link>
+            <Nav.Link href="/naturation-guides" className="nav-item">
+              <i class="bi bi-file-richtext"></i> מדריכי תזונה
+            </Nav.Link>
+            <Nav.Link href="/courses" className="nav-item">
+              <i class="bi bi-collection-play"></i> קורסים
+            </Nav.Link>
+
             <div className="spacer"></div>
             <Nav.Link as={Link} to="/login" onClick={handleLogout} className="nav-item logout">
               <i className="bi bi-box-arrow-right"></i> צא\י
@@ -75,7 +90,7 @@ const Sidebar = ({ userId }) => {
           </Nav>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 
