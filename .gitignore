@@ -17,7 +17,7 @@ node_modules/
 
 # Environment variables
 server/.env
-/client/.env
+client/.env
 # Mac system files
 .DS_Store
 
