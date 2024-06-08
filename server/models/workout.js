@@ -1,8 +1,6 @@
 const { Sequelize, DataTypes } = require('sequelize');
-
 module.exports = (sequelize) => {
-  class Workout extends Sequelize.Model {}
-  Workout.init({
+  const Workout = sequelize.define('Workout', {
     workout_id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
@@ -12,27 +10,32 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'User',
-        key: 'user_id'
-      }
+        model: 'users', // refers to table name
+        key: 'user_id',
+      },
     },
     workout_name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    workout_description: DataTypes.STRING,
-    scheduled_date: DataTypes.DATE,
+    workout_description: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    scheduled_date: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
     status: {
       type: DataTypes.STRING,
       allowNull: false,
     },
   }, {
-    sequelize,
     tableName: 'workouts',
-    timestamps: false,
+    timestamps: true,
   });
 
-  Workout.associate = function(models) {
+  Workout.associate = (models) => {
     Workout.belongsTo(models.User, { foreignKey: 'user_id' });
   };
 

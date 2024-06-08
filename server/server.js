@@ -19,11 +19,54 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Import Sequelize config and models
+
+
 const db = require('./models');
 
+const resetDatabase = async () => {
+  try {
+    await db.sequelize.drop();
+    console.log('Database dropped');
+    await syncDatabase();
+    console.log('Database reset and synced');
+  } catch (error) {
+    console.error('Error resetting database:', error);
+  }
+};
+
+
+// resetDatabase();
+
+const syncDatabase = async () => {
+  try {
+    await db.User.sync();
+    await db.UserDetail.sync();
+    await db.Measurement.sync();
+    await db.Task.sync();
+    await db.Workout.sync();
+    await db.NutritionPlan.sync();
+    await db.ResultTracking.sync();
+    await db.Exercise.sync();
+    await db.Training.sync();
+    console.log('Database synced');
+  } catch (error) {
+    console.error('Error syncing database:', error);
+  }
+};
+
+syncDatabase();
+
+
+
 // Sync models to ensure database is up-to-date
-db.sequelize.sync().then(() => {
+// Sync models to ensure database is up-to-date
+db.sequelize.sync({ alter: true }).then(() => {
   console.log('Database synced');
+});
+// General logging middleware to log all requests
+app.use((req, res, next) => {
+  console.log(`Incoming request: ${req.method} ${req.url}`);
+  next();
 });
 
 // Import routes
@@ -72,26 +115,52 @@ app.post('/api/tracking', upload.array('photos', 4), async (req, res) => {
 });
 
 // Define the user registration route
+const validateRegistrationData = (data) => {
+  // Validate required fields and data types
+  const requiredFields = ['name', 'email', 'password', 'phone', 'age', 'height', 'weight', 'trainingYears', 'trainingFrequency'];
+  for (const field of requiredFields) {
+    if (!data[field]) {
+      return `${field} is required`;
+    }
+  }
+  // Additional validation logic can be added here
+  return null;
+};
+
 app.post('/api/auth/register', async (req, res) => {
+  console.log("Register route");
   logger.debug('Register route');
+
   const {
     name, email, password, phone, age, height, weight, trainingYears, trainingFrequency, preferredTrainingLocation,
     homeEquipment, desiredEquipment, strengthTrainingDescription, preferredFocusAreas, favoriteCardio,
     currentCardioRoutine, injuries, highestWeight, favoriteFoods, dislikedFoods, foodTrackingMethod, pastDiets,
     dailyNutrition, weekendNutrition, favoriteRecipes, alcoholConsumption, medications, sleepHours, currentJob,
     activityLevel, sportsParticipation, mirrorReflection, longTermGoals, motivationLevel, commitmentDeclaration,
-    additionalNotes, medicalStatement, signature, termsAccepted, mailingAccepted
+    additionalNotes, medicalStatement, signature, termsAccepted, mailingAccepted, status
   } = req.body;
+
+  // Log the entire request body for debugging
+  console.log('Request body:', req.body);
+
+  // Validate the registration data
+  const validationError = validateRegistrationData(req.body);
+  if (validationError) {
+    logger.error('Validation error:', validationError);
+    return res.status(400).json({ error: validationError });
+  }
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     logger.debug('Password hashed successfully.');
 
-    const newUser = await db.User.create({
+    const newUser = await User.create({
       name,
       email,
       password: hashedPassword,
       role: 'user',
+      status: status || null,
+      due_date: due_date || null,
     });
 
     const userId = newUser.user_id;
@@ -140,7 +209,6 @@ app.post('/api/auth/register', async (req, res) => {
 
     logger.info('User details inserted successfully');
 
-    // Define and insert the tasks for the user
     const tasks = [
       {
         user_id: userId,
@@ -148,7 +216,7 @@ app.post('/api/auth/register', async (req, res) => {
         task_description: 'This is your first welcome task. Get familiar with our platform.',
         task_status: 'Pending',
         task_type: 'food',
-        due_date: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000) // 1 day from now
+        due_date: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000)
       },
       {
         user_id: userId,
@@ -156,7 +224,7 @@ app.post('/api/auth/register', async (req, res) => {
         task_description: 'This is your second welcome task. Complete your profile.',
         task_status: 'Pending',
         task_type: 'food',
-        due_date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000) // 2 days from now
+        due_date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000)
       },
       {
         user_id: userId,
@@ -164,7 +232,7 @@ app.post('/api/auth/register', async (req, res) => {
         task_description: 'This is your third welcome task. Set your fitness goals.',
         task_status: 'Pending',
         task_type: 'food',
-        due_date: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000) // 3 days from now
+        due_date: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
       },
       {
         user_id: userId,
@@ -172,19 +240,19 @@ app.post('/api/auth/register', async (req, res) => {
         task_description: 'This is your fourth welcome task. Start tracking your progress.',
         task_status: 'Pending',
         task_type: 'measure',
-        due_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 1 week from now
+        due_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
       }
     ];
 
-    // Insert the tasks using Sequelize
     for (const task of tasks) {
-      await db.Task.create(task);
+      await Task.create(task);
     }
 
     logger.info('Tasks inserted successfully for user ID:', userId);
     res.status(201).json(newUser);
   } catch (error) {
     logger.error('Error during user registration:', error.message);
+    console.log(error); // Log the error to the console for debugging
     res.status(400).json({ error: error.message });
   }
 });

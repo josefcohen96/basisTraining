@@ -1,36 +1,36 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  const NutritionPlan = sequelize.define('NutritionPlan', {
-    plan_id: {
+  const ResultTracking = sequelize.define('ResultTracking', {
+    result_id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
-    user_id: {
+    task_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: {
-        model: 'users',
-        key: 'user_id',
-      },
     },
-    plan_name: {
-      type: DataTypes.STRING,
+    steps_to_do: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
-    plan_description: {
+    avg_steps: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    eating_day_free_txt: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    pdf_link: {
-      type: DataTypes.STRING,
-      allowNull: true,
+    result_dt: {
+      type: DataTypes.DATE,
+      allowNull: false,
     },
   }, {
-    tableName: 'nutrition_plan',
+    tableName: 'result_tracking',
     timestamps: false,
   });
 
-  return NutritionPlan;
+  return ResultTracking;
 };

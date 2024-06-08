@@ -1,8 +1,6 @@
 const { Sequelize, DataTypes } = require('sequelize');
-
 module.exports = (sequelize) => {
-  class User extends Sequelize.Model {}
-  User.init({
+  const User = sequelize.define('User', {
     user_id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
@@ -26,13 +24,30 @@ module.exports = (sequelize) => {
       allowNull: false,
       defaultValue: 'user',
     },
+    status: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    due_date: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: Sequelize.NOW,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: Sequelize.NOW,
+    },
   }, {
-    sequelize,
     tableName: 'users',
-    timestamps: false,
+    timestamps: true,
   });
 
-  User.associate = function(models) {
+  User.associate = (models) => {
     User.hasOne(models.UserDetail, { foreignKey: 'user_id' });
     User.hasMany(models.Task, { foreignKey: 'user_id' });
     User.hasMany(models.Workout, { foreignKey: 'user_id' });

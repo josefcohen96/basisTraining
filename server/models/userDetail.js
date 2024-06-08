@@ -7,9 +7,9 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       primaryKey: true,
       references: {
-        model: 'Users',  // Make sure this is the correct table name
-        key: 'user_id'
-      }
+        model: 'users',
+        key: 'user_id',
+      },
     },
     phone: DataTypes.STRING,
     age: DataTypes.INTEGER,

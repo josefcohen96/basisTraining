@@ -1,36 +1,30 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  const NutritionPlan = sequelize.define('NutritionPlan', {
-    plan_id: {
+  class Exercise extends Sequelize.Model {}
+  Exercise.init({
+    exercise_id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
-    user_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'users',
-        key: 'user_id',
-      },
-    },
-    plan_name: {
+    area: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    plan_description: {
+    exercise_name: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
     },
-    pdf_link: {
+    exercise_description: {
       type: DataTypes.STRING,
       allowNull: true,
     },
   }, {
-    tableName: 'nutrition_plan',
+    sequelize,
+    tableName: 'exercises',
     timestamps: false,
   });
 
-  return NutritionPlan;
+  return Exercise;
 };

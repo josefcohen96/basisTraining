@@ -12,7 +12,7 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Users',  // Make sure this is the correct table name
+        model: 'users',  // Make sure this is the correct table name
         key: 'user_id'
       }
     },

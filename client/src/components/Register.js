@@ -98,6 +98,7 @@ const Register = () => {
   };
 
   const handleSubmit = async (e) => {
+    console.log("submitting...");
     e.preventDefault();
     if (!termsAccepted) {
       alert("You must accept the terms to register.");
@@ -105,16 +106,18 @@ const Register = () => {
     }
     const signature = signaturePadRef.current.toDataURL(); // Get the signature as a data URL
     const finalData = { ...formData, signature, termsAccepted, mailingAccepted };
+    console.log('Final Data:', finalData); // Log the finalData to see what is being sent
     try {
+      console.log("sending...");
       const response = await axios.post('http://localhost:5000/api/auth/register', finalData);
       console.log(response.data);
       generatePDF(); // Call the function to generate the PDF
       navigate('/login'); // Redirect to login after successful registration
     } catch (error) {
-      console.error(error);
+      console.error('Error during registration:', error.response ? error.response.data : error.message);
     }
   };
-
+  
   const generatePDF = async () => {
     const input = formRef.current;
     const canvas = await html2canvas(input);
