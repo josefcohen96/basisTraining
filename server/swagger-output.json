@@ -1,0 +1,772 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "My API",
+    "description": "API Description",
+    "version": "1.0.0"
+  },
+  "host": "localhost:5000",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "paths": {
+    "/api/tracking": {
+      "post": {
+        "description": "Adding a new measurement to the measurements table",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "task_id": {
+                  "example": "any"
+                },
+                "user_id": {
+                  "example": "any"
+                },
+                "date": {
+                  "example": "any"
+                },
+                "weight": {
+                  "example": "any"
+                },
+                "body_fat_percentage": {
+                  "example": "any"
+                },
+                "chest": {
+                  "example": "any"
+                },
+                "waist": {
+                  "example": "any"
+                },
+                "thighr": {
+                  "example": "any"
+                },
+                "thighl": {
+                  "example": "any"
+                },
+                "armr": {
+                  "example": "any"
+                },
+                "arml": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/auth/register": {
+      "post": {
+        "description": "create a new user , add to users table and userDetails table, also when creating a new user, add him the default tasks",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "any"
+                },
+                "email": {
+                  "example": "any"
+                },
+                "password": {
+                  "example": "any"
+                },
+                "phone": {
+                  "example": "any"
+                },
+                "age": {
+                  "example": "any"
+                },
+                "height": {
+                  "example": "any"
+                },
+                "weight": {
+                  "example": "any"
+                },
+                "trainingYears": {
+                  "example": "any"
+                },
+                "trainingFrequency": {
+                  "example": "any"
+                },
+                "preferredTrainingLocation": {
+                  "example": "any"
+                },
+                "homeEquipment": {
+                  "example": "any"
+                },
+                "desiredEquipment": {
+                  "example": "any"
+                },
+                "strengthTrainingDescription": {
+                  "example": "any"
+                },
+                "preferredFocusAreas": {
+                  "example": "any"
+                },
+                "favoriteCardio": {
+                  "example": "any"
+                },
+                "currentCardioRoutine": {
+                  "example": "any"
+                },
+                "injuries": {
+                  "example": "any"
+                },
+                "highestWeight": {
+                  "example": "any"
+                },
+                "favoriteFoods": {
+                  "example": "any"
+                },
+                "dislikedFoods": {
+                  "example": "any"
+                },
+                "foodTrackingMethod": {
+                  "example": "any"
+                },
+                "pastDiets": {
+                  "example": "any"
+                },
+                "dailyNutrition": {
+                  "example": "any"
+                },
+                "weekendNutrition": {
+                  "example": "any"
+                },
+                "favoriteRecipes": {
+                  "example": "any"
+                },
+                "alcoholConsumption": {
+                  "example": "any"
+                },
+                "medications": {
+                  "example": "any"
+                },
+                "sleepHours": {
+                  "example": "any"
+                },
+                "currentJob": {
+                  "example": "any"
+                },
+                "activityLevel": {
+                  "example": "any"
+                },
+                "sportsParticipation": {
+                  "example": "any"
+                },
+                "mirrorReflection": {
+                  "example": "any"
+                },
+                "longTermGoals": {
+                  "example": "any"
+                },
+                "motivationLevel": {
+                  "example": "any"
+                },
+                "commitmentDeclaration": {
+                  "example": "any"
+                },
+                "additionalNotes": {
+                  "example": "any"
+                },
+                "medicalStatement": {
+                  "example": "any"
+                },
+                "signature": {
+                  "example": "any"
+                },
+                "termsAccepted": {
+                  "example": "any"
+                },
+                "mailingAccepted": {
+                  "example": "any"
+                },
+                "status": {
+                  "example": "any"
+                },
+                "due_date": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "description": "login to the system and get the token",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                },
+                "password": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/tasks/{userId}": {
+      "get": {
+        "description": "returns all the task for specific user",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/tasks/{taskId}": {
+      "put": {
+        "description": "set the specific task status to done/undone",
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "task_status": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/tracking/{userId}": {
+      "get": {
+        "description": "returns all the measurements for specific user",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/latest-measurement/{userId}": {
+      "get": {
+        "description": "return the last measurement for specific user",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/workouts/{userId}": {
+      "get": {
+        "description": "return all the workouts for specific user",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/food-entry": {
+      "post": {
+        "description": "Adding a new food entry(task to enter your meal parameters) to the food_entries table for specific user, and set the task status to done",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "example": "any"
+                },
+                "description": {
+                  "example": "any"
+                },
+                "task_id": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/exercises/{exerciseId}": {
+      "get": {
+"description": "return specific exercise from the exercises table by exerciseId",
+        "parameters": [
+          {
+            "name": "exerciseId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/workouts/save": {
+      "post": {
+        "description": "save the user workout after complete, and set the task status to done",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "task_id": {
+                  "example": "any"
+                },
+                "workoutId": {
+                  "example": "any"
+                },
+                "exercises": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/admin/users": {
+      "get": {
+        "description": "get list of users",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/admin/users/{userId}/workouts": {
+      "get": {
+        "description": "get list of workouts for specific user// need to check if there is already function for it ",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "admin-user-id",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "admin-user-id",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "workout_name": {
+                  "example": "any"
+                },
+                "workout_description": {
+                  "example": "any"
+                },
+                "scheduled_date": {
+                  "example": "any"
+                },
+                "status": {
+                  "example": "any"
+                },
+                "training": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/admin/workouts/{workoutId}/training": {
+      "get": {
+        "description": "Get training details for workout ID:",
+        "parameters": [
+          {
+            "name": "workoutId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "admin-user-id",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/admin/training/{trainingId}": {
+      "delete": {
+        "description": "Delete training by ID:",
+        "parameters": [
+          {
+            "name": "trainingId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "admin-user-id",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "trainingId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "admin-user-id",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "exercise_id": {
+                  "example": "any"
+                },
+                "sets_to_do": {
+                  "example": "any"
+                },
+                "reps_to_do": {
+                  "example": "any"
+                },
+                "goal_weight": {
+                  "example": "any"
+                },
+                "manipulation": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/admin/approved_emails": {
+      "post": {
+        "description": "add an email to the approved emails list in db ", 
+        "parameters": [
+          {
+            "name": "admin-user-id",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/admin/exercises": {
+      "post": {
+        "description": "admin can add new exercise to the exercises table",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "exercise_name": {
+                  "example": "any"
+                },
+                "exercise_area": {
+                  "example": "any"
+                },
+                "exercise_description": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/admin/users/{userId}/nutrition": {
+      "post": {
+        "description": "TBD",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "plan_name": {
+                  "example": "any"
+                },
+                "plan_description": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  }
+}
