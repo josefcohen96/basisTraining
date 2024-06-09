@@ -26,5 +26,9 @@ module.exports = (sequelize) => {
     timestamps: false,
   });
 
+  Exercise.associate = (models) => {
+    Exercise.hasMany(models.Training, { foreignKey: 'exercise_id' });
+  };
+
   return Exercise;
 };

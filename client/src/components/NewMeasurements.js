@@ -46,9 +46,7 @@ const NewMeasurements = ({ userId, taskId, onNewMeasurement }) => {
       });
 
       const response = await axios.post(`http://localhost:5000/api/tracking`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+
       });
       console.log('New measurement added:', response.data);
 

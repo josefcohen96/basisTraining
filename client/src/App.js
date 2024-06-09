@@ -22,6 +22,11 @@ import AdminSidebar from './components/admin/AdminSideBar';
 import AdminDashBoard from './components/admin/AdminDashboard';
 import UserInfo from './components/admin/UserInfo';
 import ExercisesList from './components/ExercisesList'; // Adjust the path as necessary
+import Courses from './components/Courses';
+import CourseDetail from './components/CourseDetail';
+import AdminCourseManagement from './components/admin/AdminCourseManagement';
+
+
 
 
 function App() {
@@ -57,14 +62,15 @@ const Main = () => {
             <Route path="/start-workout/:workoutId" element={<WorkoutDetail />} />
             <Route path="/exercise/:exerciseId" element={<ExerciseDetail />} />
             <Route path="/exericses" element={<ExercisesList />} />
-
+            <Route path="/courses" element={<Courses />} />
+            <Route path="/courses/:id" element={<CourseDetail />} />
           </Route>
           <Route path="/not-authorized" element={<NotAuthorized />} />
           <Route element={<AdminRoute />}>
             <Route path="/admin" element={<AdminDashBoard />} /> {/* Admin route */}
             <Route path="/TrainersMange" element={<TrainersMange />} /> {/* Admin route */}
             <Route path="/user/:userId" element={<UserInfo />} />
-
+            <Route path="/admin/courses" element={<AdminCourseManagement />} />
           </Route>
         </Routes>
       </div>

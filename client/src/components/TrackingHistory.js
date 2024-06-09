@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import Card from 'react-bootstrap/Card';
-import { Line } from 'react-chartjs-2';
 import 'chart.js/auto';
 import './TrackingHistory.css';
 import NewMeasurements from './NewMeasurements'; // Import the new component
@@ -40,6 +39,7 @@ const TrackingHistory = () => {
 
   const fetchMetrics = useCallback(async () => {
     try {
+      console.log('User ID:', userId); // Add console log to check user ID
       const response = await axios.get(`http://localhost:5000/api/tracking/${userId}`); // Add user ID to the URL
       console.log('Fetched metrics:', response.data);
       setMetrics(response.data);
@@ -97,29 +97,6 @@ const TrackingHistory = () => {
   const data = {
     labels: metrics.map(metric => formatDate(metric.date)),
     datasets: createDataSets(),
-  };
-
-  const options = {
-    scales: {
-      x: {
-        ticks: {
-          font: {
-            size: 10, // Increase the font size for the x-axis labels
-          },
-        },
-      },
-    },
-    plugins: {
-      legend: {
-        display: true,
-        labels: {
-          usePointStyle: true,
-          font: {
-            size: 12,
-          },
-        },
-      },
-    },
   };
 
   return (

@@ -60,5 +60,9 @@ module.exports = (sequelize) => {
     timestamps: false,
   });
 
+  Training.associate = (models) => {
+    Training.belongsTo(models.Exercise, { foreignKey: 'exercise_id' });
+  };
+
   return Training;
 };

@@ -117,7 +117,7 @@ const WorkoutDetail = () => {
               style={{ cursor: 'pointer', color: 'blue' }}
               onClick={() => handleShowModal(currentExercise)}
             >
-              {currentExercise.exercise_name}
+              {currentExercise.Exercise.exercise_name}
             </span>
           </Card.Title>
           <div className="exercise-info">
@@ -171,7 +171,7 @@ const WorkoutDetail = () => {
                   style={{ cursor: 'pointer', color: 'blue' }}
                   onClick={() => handleShowModal(nextExercise)}
                 >
-                  {nextExercise.exercise_name}
+                  {nextExercise.Exercise.exercise_name}
                 </span>
               </Card.Title>
               <div className="exercise-info">

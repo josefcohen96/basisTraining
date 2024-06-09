@@ -12,7 +12,7 @@ const ExercisesList = () => {
   useEffect(() => {
     const fetchExercises = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/admin/exercises');
+        const response = await axios.get('http://localhost:5000/api/exercises');
         setExercises(response.data);
         setLoading(false);
       } catch (error) {
