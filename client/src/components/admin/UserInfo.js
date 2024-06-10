@@ -66,7 +66,7 @@ const UserInfo = () => {
     formData.append('plan_name', plan.plan_name);
     formData.append('plan_description', plan.plan_description);
     formData.append('file', plan.file);
-
+  
     try {
       await axios.post(`http://localhost:5000/api/users/${userId}/nutrition`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },

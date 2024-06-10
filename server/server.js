@@ -14,6 +14,7 @@ const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const courseRoutes = require('./routes/courseRoutes');
 const workoutRoutes = require('./routes/workoutRoutes');
+const nutritionPlanRoutes = require('./routes/nutritionPlanRoutes'); // Import nutrition plan routes
 
 require('dotenv').config();
 
@@ -35,6 +36,7 @@ app.use('/api/courses', courseRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api', workoutRoutes);
+app.use('/api', nutritionPlanRoutes); // Use nutrition plan routes
 
 const resetDatabase = async () => {
   try {
