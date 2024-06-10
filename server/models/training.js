@@ -25,7 +25,7 @@ module.exports = (sequelize) => {
     },
     trainer_exp: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     sets_to_do: {
       type: DataTypes.INTEGER,
@@ -45,15 +45,15 @@ module.exports = (sequelize) => {
     },
     sets_done: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     reps_done: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     last_set_weight: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
   }, {
     tableName: 'training',

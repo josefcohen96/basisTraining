@@ -1,7 +1,8 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  const ResultTracking = sequelize.define('ResultTracking', {
+  class ResultTracking extends Sequelize.Model {}
+  ResultTracking.init({
     result_id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
@@ -9,11 +10,15 @@ module.exports = (sequelize) => {
     },
     task_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
+      references: {
+        model: 'tasks',  // Make sure this is the correct table name
+        key: 'task_id'
+      }
     },
     steps_to_do: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     avg_steps: {
       type: DataTypes.INTEGER,
@@ -25,12 +30,17 @@ module.exports = (sequelize) => {
     },
     result_dt: {
       type: DataTypes.DATE,
-      allowNull: false,
+      allowNull: true,
     },
   }, {
+    sequelize,
     tableName: 'result_tracking',
     timestamps: false,
   });
+
+  ResultTracking.associate = function(models) {
+    ResultTracking.belongsTo(models.Task, { foreignKey: 'task_id' });
+  };
 
   return ResultTracking;
 };

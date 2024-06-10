@@ -67,7 +67,7 @@ const TrainersMange = () => {
   useEffect(() => {
     const fetchExercises = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/admin/exercises'); // Adjust the endpoint as needed
+        const response = await axios.get('http://localhost:5000/api/exercises'); // Adjust the endpoint as needed
         setExercises(response.data);
       } catch (err) {
         console.error('Error fetching exercises:', err);
@@ -132,7 +132,7 @@ const TrainersMange = () => {
 
   const handleSave = async (trainingId) => {
     try {
-      await axios.put(`http://localhost:5000/api/admin/training/${trainingId}`, editingTrainingData);
+      await axios.put(`http://localhost:5000/api/training/${trainingId}`, editingTrainingData);
       setTrainingDetails(prevDetails => {
         const newDetails = { ...prevDetails };
         Object.keys(newDetails).forEach(key => {
@@ -152,7 +152,7 @@ const TrainersMange = () => {
     const isConfirmed = window.confirm('Are you sure you want to delete this exercise?');
     if (isConfirmed) {
       try {
-        await axios.delete(`http://localhost:5000/api/admin/training/${trainingId}`);
+        await axios.delete(`http://localhost:5000/api/training/${trainingId}`);
         setTrainingDetails(prevDetails => {
           const newDetails = { ...prevDetails };
           Object.keys(newDetails).forEach(key => {
@@ -177,7 +177,7 @@ const TrainersMange = () => {
   };
 
   const handleAddTraining = () => {
-    setNewTraining([...newTraining, { exercise_id: '', sets_to_do: '', reps_to_do: '', goal_weight: '', manipulation: '' }]);
+    setNewTraining([...newTraining, { exercise_id: '',trainer_exp:'', sets_to_do: '', reps_to_do: '', goal_weight: '', manipulation: '' }]);
   };
 
   const handleRemoveTraining = (index) => {
@@ -194,7 +194,7 @@ const TrainersMange = () => {
         return;
       }
     }
-
+  
     try {
       const requestBody = {
         workout_name: newWorkout.workout_name,
@@ -203,24 +203,24 @@ const TrainersMange = () => {
         status: newWorkout.status,
         training: newTraining // Ensure this is correctly formatted
       };
-
-      const response = await axios.post(`http://localhost:5000/api/admin/users/${selectedUser}/workouts`, requestBody);
+  
+      const response = await axios.post(`http://localhost:5000/api/users/${selectedUser}/workouts`, requestBody);
       const newWorkoutId = response.data.workout_id;
-
+  
       await Promise.all(newTraining.map(training =>
         axios.post(`http://localhost:5000/api/admin/workouts/${newWorkoutId}/training`, {
           ...training,
           workout_id: newWorkoutId
         })
       ));
-
+  
       // Add the new workout to the user's tasks table
       await axios.post(`http://localhost:5000/api/admin/users/${selectedUser}/tasks`, {
         task_type: 'workout',
         task_description: `Workout: ${newWorkout.workout_name}`,
         related_id: newWorkoutId
       });
-
+  
       setWorkouts([...workouts, { ...requestBody, workout_id: newWorkoutId }]); // Add the new workout to the state
       setNewWorkout({ workout_name: '', workout_description: '', scheduled_date: '', status: 'pending' });
       setNewTraining([]); // Clear new training entries
@@ -229,7 +229,6 @@ const TrainersMange = () => {
       console.error('Error creating new workout:', err);
     }
   };
-
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
@@ -288,7 +287,7 @@ const TrainersMange = () => {
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="workoutDescription">תיאור האימון:</label>
+                <label htmlFor="workoutDescription">הסבר על התרגיל:</label>
                 <input
                   type="text"
                   className="form-control"
@@ -296,7 +295,6 @@ const TrainersMange = () => {
                   name="workout_description"
                   value={newWorkout.workout_description}
                   onChange={handleNewWorkoutChange}
-                  required
                 />
               </div>
               <div className="form-group">
