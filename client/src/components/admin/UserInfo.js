@@ -68,7 +68,7 @@ const UserInfo = () => {
     formData.append('file', plan.file);
   
     try {
-      await axios.post(`http://localhost:5000/api/users/${userId}/nutrition`, formData, {
+      await axios.post(`http://localhost:5000/api/admin/users/${userId}/nutrition`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       alert('Nutrition plan added successfully');
