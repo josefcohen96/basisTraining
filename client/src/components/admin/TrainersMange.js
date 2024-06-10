@@ -204,7 +204,7 @@ const TrainersMange = () => {
         training: newTraining // Ensure this is correctly formatted
       };
   
-      const response = await axios.post(`http://localhost:5000/api/users/${selectedUser}/workouts`, requestBody);
+      const response = await axios.post(`http://localhost:5000/api/admin/users/${selectedUser}/workouts`, requestBody);
       const newWorkoutId = response.data.workout_id;
   
       await Promise.all(newTraining.map(training =>
