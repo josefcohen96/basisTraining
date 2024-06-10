@@ -12,5 +12,5 @@ router.put('/training/:trainingId', checkAdmin, adminController.updateTraining);
 router.post('/approved_emails', checkAdmin, adminController.addApprovedEmail);
 router.post('/exercises', checkAdmin, adminController.addExercise);
 router.post('/users/:userId/nutrition', checkAdmin, adminController.addNutritionPlan);
-
+router.post('/users/:userId/tasks', checkAdmin, adminController.addTask);
 module.exports = router;

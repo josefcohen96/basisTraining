@@ -148,24 +148,6 @@ app.get('/api/latest-measurement/:userId', async (req, res) => {
   }
 });
 
-// Define the get workouts for a user route
-app.get('/api/workouts/:userId', async (req, res) => {
-  logger.debug('Fetching workouts for user ID:', req.params.userId);
-  const { userId } = req.params;
-
-  try {
-    const workouts = await db.Workout.findAll({
-      where: { user_id: userId },
-      attributes: ['workout_name', 'workout_description', 'workout_id'], // Specify the attributes to retrieve
-    });
-    logger.info('Workouts fetched for user ID:', userId, workouts);
-    res.json(workouts);
-  } catch (error) {
-    logger.error('Error fetching workouts for user ID:', userId, error.message);
-    res.status(500).json({ error: 'Database error' });
-  }
-});
-
 // Define the add new food entry route
 app.post('/api/food-entry', async (req, res) => {
   logger.debug('Add new food entry');

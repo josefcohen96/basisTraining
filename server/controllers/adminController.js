@@ -137,3 +137,22 @@ exports.addNutritionPlan = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// add export for addTask for user
+exports.addTask = async (req, res) => {
+  const { userId } = req.params;
+  const { task_name, task_description, task_type, due_date } = req.body; // Ensure task_type is included
+  try {
+    const task = await Task.create({
+      user_id: userId,
+      task_name,
+      task_description,
+      task_status: 'Pending',
+      task_type,
+      due_date
+    });
+    res.status(201).json(task);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

@@ -45,7 +45,7 @@ const UserInfo = () => {
   const handleTaskSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`http://localhost:5000/api/users/${userId}/tasks`, task);
+      await axios.post(`http://localhost:5000/api/admin/users/${userId}/tasks`, task);
       alert('Task added successfully');
     } catch (error) {
       console.error('Error adding task:', error);
@@ -92,15 +92,19 @@ const UserInfo = () => {
           </button>
           {showTaskForm && (
             <form onSubmit={handleTaskSubmit}>
-              <label>Task Name:</label>
+              <label>שם המשימה:</label>
               <input type="text" name="task_name" value={task.task_name} onChange={handleTaskInputChange} required />
-              <label>Due Date:</label>
+              <label>תאריך לביצוע:</label>
               <input type="date" name="due_date" value={task.due_date} onChange={handleTaskInputChange} required />
-              <label>Task Type:</label>
-              <input type="text" name="task_type" value={task.task_type} onChange={handleTaskInputChange} required />
-              <label>Task Description:</label>
+              <label>סוג משימה:</label>
+              <select name="task_type" value={task.task_type} onChange={handleTaskInputChange} required>
+                <option value="" disabled>בחר סוג משימה</option>
+                <option value="food">Food</option>
+                <option value="measure">Measure</option>
+              </select>
+              <label>תיאור משימה:</label>
               <textarea name="task_description" value={task.task_description} onChange={handleTaskInputChange} required />
-              <button type="submit">Add Task</button>
+              <button type="submit">הוסף משימה</button>
             </form>
           )}
         </div>
