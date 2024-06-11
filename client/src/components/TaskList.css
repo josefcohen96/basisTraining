@@ -1,16 +1,40 @@
-.task-list {
-    padding: 20px;
-    right: 0;
-    text-align: right;
-  }
-  
-  .list-group-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  
-  .list-group-item label {
-    flex-grow: 1;
-  }
-  
+/* src/components/TaskList.css */
+
+.task-list-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.cards-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.measurement-card, .steps-card {
+  width: 45%;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+}
+
+.tasks-section {
+  width: 100%;
+}
+
+.tasks-section ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.tasks-section li {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.tasks-section li:last-child {
+  border-bottom: none;
+}

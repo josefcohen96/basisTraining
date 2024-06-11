@@ -13,6 +13,7 @@ const adminRoutes = require('./routes/adminRoutes');
 const courseRoutes = require('./routes/courseRoutes');
 const workoutRoutes = require('./routes/workoutRoutes');
 const nutritionPlanRoutes = require('./routes/nutritionPlanRoutes');
+const trackingRoutes = require('./routes/trackingRoutes'); // Add this line
 
 const Joi = require('joi');
 
@@ -37,7 +38,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api', workoutRoutes);
 app.use('/api',nutritionPlanRoutes);
-const { Sequelize } = require('sequelize');
+// const { Sequelize } = require('sequelize');
+app.use('/api', trackingRoutes); // Add this line
 
 
 const resetDatabase = async () => {
