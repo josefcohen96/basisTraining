@@ -1,5 +1,7 @@
 .task-list {
     padding: 20px;
+    right: 0;
+    text-align: right;
   }
   
   .list-group-item {

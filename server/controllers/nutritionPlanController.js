@@ -40,7 +40,7 @@ exports.getNutritionPlanById = async (req, res) => {
   const { planId } = req.params;
   try {
     const plan = await db.NutritionPlan.findOne({ where: { plan_id: planId } });
-    console.log("plannnnnnnnn",plan);
+    console.log("plannnnnnnnn", plan);
     if (plan) {
       res.status(200).json(plan);
     } else {
@@ -63,5 +63,16 @@ exports.getNutritionPlanPdf = async (req, res) => {
     res.sendFile(pdfPath);
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+};
+
+exports.getNutritionPlansByUserId = async (req, res) => {
+  const { userId } = req.params;
+  console.log("userId", userId)
+  try {
+    const plans = await db.NutritionPlan.findAll({ where: { user_id: userId } });
+    res.status(200).json(plans);
+  } catch (error) {
+    res.status(500).json({ error: 'Database error' });
   }
 };

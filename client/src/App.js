@@ -27,6 +27,7 @@ import CourseDetail from './components/CourseDetail';
 import AdminCourseManagement from './components/admin/AdminCourseManagement';
 import NutritionPlanList from './components/NutritionPlanList'; 
 import NutritionPlanViewer from './components/NutritionPlanViewer';
+import UserNutritionPlanList from './components/UserNutritionPlanList';
 
 function App() {
   return (
@@ -63,9 +64,9 @@ const Main = () => {
             <Route path="/exericses" element={<ExercisesList />} />
             <Route path="/courses" element={<Courses />} />
             <Route path="/courses/:id" element={<CourseDetail />} />
+            <Route path = "/naturation-menu" element = {<UserNutritionPlanList/>} />
             <Route path = "/naturation-guides" element = {<NutritionPlanList/>} />
             <Route path="/nutrition-plan/:planId" element={<NutritionPlanViewer />} />
-
           </Route>
           <Route path="/not-authorized" element={<NotAuthorized />} />
           <Route element={<AdminRoute />}>

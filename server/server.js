@@ -177,22 +177,23 @@ app.get('/api/tasks/:userId', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-const taskSchema = Joi.object({
-  task_status: Joi.string().valid('pending', 'completed', 'failed').required(),
-  task_type: Joi.string().valid('measure', 'food', 'train').required()
-});
+// const taskSchema = Joi.object({
+//   task_status: Joi.string().valid('pending', 'completed', 'failed').required(),
+//   task_type: Joi.string().valid('measure', 'food', 'train').required()
+// });
 
 // Define the update task status route
 app.put('/api/tasks/:taskId', async (req, res) => {
   logger.debug('Update task status', req.body, req.params);
   const { task_status } = req.body;
   const { taskId } = req.params;
-
-  const { error } = taskSchema.validate({ task_status, task_type });
-  if (error) {
-    logger.warn('Invalid input for updating task', req.body, req.params);
-    return res.status(400).json({ error: error.details[0].message });
-  }
+  // print the types of taskId and task_status
+  console.log('taskId:', typeof taskId, 'task_status:', typeof task_status);
+  // const { error } = taskSchema.validate({ task_status, task_type });
+  // if (error) {
+  //   logger.warn('Invalid input for updating task', req.body, req.params);
+  //   return res.status(400).json({ error: error.details[0].message });
+  // }
 
   try {
     const [updated] = await db.Task.update({ task_status }, { where: { task_id: taskId } });

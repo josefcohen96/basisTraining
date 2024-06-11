@@ -17,5 +17,6 @@ router.post('/nutrition-plans/:userId', upload.single('file'), nutritionPlanCont
 router.get('/nutrition-plans', nutritionPlanController.getAllNutritionPlans);
 router.get('/nutrition-plans/:planId', nutritionPlanController.getNutritionPlanById);
 router.get('/nutrition-plans/:planId/pdf', nutritionPlanController.getNutritionPlanPdf);
+router.get('/users/:userId/nutrition-plans', nutritionPlanController.getNutritionPlansByUserId);
 
 module.exports = router;
