@@ -10,7 +10,7 @@ exports.getLastMeasurement = async (req, res) => {
       order: [['date', 'DESC']],
     });
     if (lastMeasurement) {
-      console.log("lastMeasurement",lastMeasurement);
+      console.log("lastMeasurement", lastMeasurement);
       res.json(lastMeasurement);
     } else {
       res.status(404).json({ message: 'No measurements found' });
@@ -23,12 +23,10 @@ exports.getLastMeasurement = async (req, res) => {
 // Fetch the last step tracking for a specific user
 exports.getLastStepTracking = async (req, res) => {
   const { userId } = req.params;
-  console.log("22222222222222",userId)
   try {
     const lastStepTracking = await db.ResultTracking.findOne({
       where: { user_id: userId },
     });
-    console.log("11111111",lastStepTracking)
     if (lastStepTracking) {
       res.json(lastStepTracking);
     } else {
@@ -62,5 +60,43 @@ exports.addMeasurement = async (req, res) => {
   } catch (error) {
     console.error('Error adding measurement:', error);
     res.status(500).json({ error: error.message });
+  }
+};
+
+exports.updateSteps = async (req, res) => {
+  const { taskId } = req.params;
+  const { steps_to_do, avg_steps, eating_day_free_txt } = req.body;
+
+  try {
+    // Update the steps in ResultTracking
+    const [updated] = await db.ResultTracking.update(
+      { steps_to_do, avg_steps, eating_day_free_txt },
+      { where: { task_id: taskId } }
+    );
+
+    if (updated) {
+      // Find the updated steps entry
+      const updatedSteps = await db.ResultTracking.findOne({ where: { task_id: taskId } });
+
+      // Update the task status to 'Complete'
+      await db.Task.update({ task_status: 'Finish' }, { where: { task_id: taskId } });
+
+      res.json(updatedSteps);
+    } else {
+      res.status(404).json({ error: 'Task not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+exports.getStepData = async (req, res) => {
+  const { taskId } = req.params;
+
+  try {
+    const stepData = await db.ResultTracking.findOne({ where: { task_id: taskId } });
+    res.json(stepData);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
   }
 };

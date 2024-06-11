@@ -61,12 +61,17 @@ const TaskList = ({ userId }) => {
   };
 
   const handleTaskClick = (taskType, taskId) => {
+    console.log('taskType', taskType, 'taskId', taskId)
     if (taskType === 'measure') {
       navigate('/tracking-history', { state: { taskId } });
     } else if (taskType === 'food') {
       navigate('/tracking-food', { state: { taskId } });
     } else if (taskType === 'workout') {
       navigate('/training', { state: { taskId } });
+    }
+    else if (taskType === 'steps') {
+      console.log(taskId)
+      navigate(`/update-steps/${taskId}`);
     }
   };
 

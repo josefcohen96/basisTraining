@@ -145,8 +145,7 @@ const insertPdfToNutritionPlan = async (pdf) => {
     console.error('Error inserting new nutrition plan:', error.message);
     return null;
   }
-}
-
+};
 
 app.get('/api/pdf', (req, res) => {
   console.log('Get PDF file')
@@ -157,7 +156,6 @@ app.get('/api/pdf', (req, res) => {
 const userIdSchema = Joi.object({
   userId: Joi.number().integer().positive().required()
 });
-
 
 // Define the get tasks for a user route
 app.get('/api/tasks/:userId', async (req, res) => {

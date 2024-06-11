@@ -12,4 +12,7 @@ router.get('/users/:userId/measurements/last', trackingController.getLastMeasure
 router.get('/users/:userId/steps/last', trackingController.getLastStepTracking);
 router.post('/tracking', upload.array('photos', 4), trackingController.addMeasurement);
 
+router.put('/steps/:taskId', trackingController.updateSteps);
+router.get('/steps/:taskId', trackingController.getStepData);
+
 module.exports = router;
