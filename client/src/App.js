@@ -25,7 +25,7 @@ import ExercisesList from './components/ExercisesList'; // Adjust the path as ne
 import Courses from './components/Courses';
 import CourseDetail from './components/CourseDetail';
 import AdminCourseManagement from './components/admin/AdminCourseManagement';
-
+// import NutritionList from './components/NutritionList'; // Adjust the path as necessary
 
 
 
@@ -64,6 +64,7 @@ const Main = () => {
             <Route path="/exericses" element={<ExercisesList />} />
             <Route path="/courses" element={<Courses />} />
             <Route path="/courses/:id" element={<CourseDetail />} />
+            {/* <Route path = "/naturation-guides" element = {<NutritionList/>} /> */}
           </Route>
           <Route path="/not-authorized" element={<NotAuthorized />} />
           <Route element={<AdminRoute />}>

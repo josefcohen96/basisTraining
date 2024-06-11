@@ -5,15 +5,6 @@ const UserDetail = db.UserDetail;
 const Task = db.Task;
 const logger = require('../logger');
 
-const validateRegistrationData = (data) => {
-  const requiredFields = ['name', 'email', 'password', 'phone', 'age', 'height', 'weight', 'trainingYears', 'trainingFrequency'];
-  for (const field of requiredFields) {
-    if (!data[field]) {
-      return `${field} is required`;
-    }
-  }
-  return null;
-};
 
 exports.register = async (req, res) => {
   console.log("Register route");
@@ -25,16 +16,10 @@ exports.register = async (req, res) => {
     currentCardioRoutine, injuries, highestWeight, favoriteFoods, dislikedFoods, foodTrackingMethod, pastDiets,
     dailyNutrition, weekendNutrition, favoriteRecipes, alcoholConsumption, medications, sleepHours, currentJob,
     activityLevel, sportsParticipation, mirrorReflection, longTermGoals, motivationLevel, commitmentDeclaration,
-    additionalNotes, medicalStatement, signature, termsAccepted, mailingAccepted, status, due_date
+    additionalNotes, medicalStatement, signature, termsAccepted, mailingAccepted
   } = req.body;
 
   console.log('Request body:', req.body);
-
-  const validationError = validateRegistrationData(req.body);
-  if (validationError) {
-    logger.error('Validation error:', validationError);
-    return res.status(400).json({ error: validationError });
-  }
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -45,11 +30,11 @@ exports.register = async (req, res) => {
       email,
       password: hashedPassword,
       role: 'user',
-      status: status || null, // Set status if provided, otherwise null
-      due_date: due_date || null, // Set due_date if provided, otherwise null
+      status: 'active',
       createdAt: new Date(),
       updatedAt: new Date()    
     });
+    
     const userId = newUser.user_id;
     logger.info('User inserted successfully with ID:', userId);
 

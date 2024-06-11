@@ -37,3 +37,7 @@ client/.env
 # Optional REACT App
 client/build/
 client/coverage/
+
+# data
+server/data/*.pdf
+server/nutrition/*.pdf 

@@ -10,16 +10,24 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 
 const Food = () => {
   const [numPages, setNumPages] = useState(null);
-  const [pageNumber, setPageNumber] = useState(1);
-  const [inputPageNumber, setInputPageNumber] = useState(1);
+  const [pageNumber, setPageNumber] = useState(null);
+  const [inputPageNumber, setInputPageNumber] = useState(null);
+  const [pdfFile, setPdfFile] = useState(null);
   const [scale, setScale] = useState(0.4); // Default scale
 
   useEffect(() => {
-    const savedPageNumber = localStorage.getItem('pageNumber');
-    if (savedPageNumber) {
-      setPageNumber(Number(savedPageNumber));
-      setInputPageNumber(Number(savedPageNumber));
-    }
+    const fetchPdf = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/pdf');
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        setPdfFile(url);
+      } catch (error) {
+        console.error('Error fetching the PDF file:', error);
+      }
+    };
+
+    fetchPdf();
 
     const handleResize = () => {
       if (window.innerWidth < 480) {
@@ -41,6 +49,9 @@ const Food = () => {
 
   function onDocumentLoadSuccess({ numPages }) {
     setNumPages(numPages);
+    const savedPageNumber = localStorage.getItem('pageNumber') || numPages;
+    setPageNumber(Number(savedPageNumber));
+    setInputPageNumber(Number(savedPageNumber));
   }
 
   function handleInputChange(e) {
@@ -57,16 +68,32 @@ const Food = () => {
     }
   }
 
+  function handlePreviousPage() {
+    const newPageNumber = pageNumber - 1;
+    setPageNumber(newPageNumber);
+    setInputPageNumber(newPageNumber);
+    localStorage.setItem('pageNumber', newPageNumber); // Save to local storage
+  }
+
+  function handleNextPage() {
+    const newPageNumber = pageNumber + 1;
+    setPageNumber(newPageNumber);
+    setInputPageNumber(newPageNumber);
+    localStorage.setItem('pageNumber', newPageNumber); // Save to local storage
+  }
+
   return (
     <div className="pdf-viewer">
       <h1>ספר המתכונים שלנו</h1>
       <div className="pdf-container">
-        <Document
-          file={require('./data1.pdf')}
-          onLoadSuccess={onDocumentLoadSuccess}
-        >
-          <Page pageNumber={pageNumber} scale={scale} />
-        </Document>
+        {pdfFile && (
+          <Document
+            file={pdfFile}
+            onLoadSuccess={onDocumentLoadSuccess}
+          >
+            {pageNumber && <Page pageNumber={pageNumber} scale={scale} />}
+          </Document>
+        )}
       </div>
       <div className="page-controls">
         <p>
@@ -83,13 +110,13 @@ const Food = () => {
         <div className="navigation">
           <button
             disabled={pageNumber <= 1}
-            onClick={() => setPageNumber(pageNumber - 1)}
+            onClick={handlePreviousPage}
           >
             קודם
           </button>
           <button
             disabled={pageNumber >= numPages}
-            onClick={() => setPageNumber(pageNumber + 1)}
+            onClick={handleNextPage}
           >
             הבא
           </button>

@@ -376,7 +376,7 @@ const Register = () => {
               </div>
               <div className="form-group">
                 <label>חתימה:</label>
-                <SignaturePad ref={signaturePadRef} canvasProps={{ className: 'signatureCanvas' }} />
+                <SignaturePad ref={signaturePadRef} canvasProps={{ className: 'signatureCanvas' }} required/>
                 <button type="button" className="btn btn-secondary btn-block mt-2" onClick={() => signaturePadRef.current.clear()}>נקה חתימה</button>
               </div>
               <div className="form-group form-check">
@@ -384,7 +384,7 @@ const Register = () => {
                 <label className="form-check-label" htmlFor="termsAccepted">קראתי את התקנון ואני מקבל את התנאים</label>
               </div>
               <div className="form-group form-check">
-                <input type="checkbox" className="form-check-input" id="mailingAccepted" checked={mailingAccepted} onChange={(e) => setMailingAccepted(e.target.checked)} />
+                <input type="checkbox" className="form-check-input" id="mailingAccepted" checked={mailingAccepted} onChange={(e) => setMailingAccepted(e.target.checked)} required />
                 <label className="form-check-label" htmlFor="mailingAccepted">אני מסכים לקבל דיוור</label>
               </div>
               <button type="submit" className="btn btn-primary btn-block">הרשמה</button>

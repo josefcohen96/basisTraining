@@ -3,17 +3,16 @@ const cors = require('cors');
 const multer = require('multer');
 const logger = require('./logger');
 const path = require('path');
-const bcrypt = require('bcryptjs');
 const swaggerUi = require('swagger-ui-express');
 const swaggerFile = require('./swagger-output.json');
 const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
 const port = 5000;
 const app = express();
 const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const courseRoutes = require('./routes/courseRoutes');
 const workoutRoutes = require('./routes/workoutRoutes');
+const Joi = require('joi');
 
 require('dotenv').config();
 
@@ -77,11 +76,27 @@ app.use((req, res, next) => {
 });
 
 
+app.get('/api/pdf', (req, res) => {
+  console.log('Get PDF file')
+  const filePath = path.join(__dirname, 'public/data1.pdf');
+  res.sendFile(filePath);
+});
+
+const userIdSchema = Joi.object({
+  userId: Joi.number().integer().positive().required()
+});
+
 
 // Define the get tasks for a user route
 app.get('/api/tasks/:userId', async (req, res) => {
   logger.debug('Get tasks for user');
   const { userId } = req.params;
+
+  const { error } = userIdSchema.validate({ userId });
+  if (error) {
+    logger.warn('Invalid user ID', req.params);
+    return res.status(400).json({ error: error.details[0].message });
+  }
 
   try {
     const tasks = await db.Task.findAll({ where: { user_id: userId } });
@@ -92,12 +107,22 @@ app.get('/api/tasks/:userId', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+const taskSchema = Joi.object({
+  task_status: Joi.string().valid('pending', 'completed', 'failed').required(),
+  task_type: Joi.string().valid('measure', 'food', 'train').required()
+});
 
 // Define the update task status route
 app.put('/api/tasks/:taskId', async (req, res) => {
   logger.debug('Update task status', req.body, req.params);
   const { task_status } = req.body;
   const { taskId } = req.params;
+
+  const { error } = taskSchema.validate({ task_status, task_type });
+  if (error) {
+    logger.warn('Invalid input for updating task', req.body, req.params);
+    return res.status(400).json({ error: error.details[0].message });
+  }
 
   try {
     const [updated] = await db.Task.update({ task_status }, { where: { task_id: taskId } });
@@ -114,11 +139,19 @@ app.put('/api/tasks/:taskId', async (req, res) => {
   }
 });
 
+
 // Define the get tracking metrics for a user route
 app.get('/api/tracking/:userId', async (req, res) => {
   console.log('Get tracking metrics for user ID:', req.params.userId)
   logger.debug('Get tracking metrics for user ID:', req.params.userId);
   const { userId } = req.params;
+
+
+  const { error } = userIdSchema.validate({ userId });
+  if (error) {
+    logger.warn('Invalid user ID', req.params);
+    return res.status(400).json({ error: error.details[0].message });
+  }
 
   try {
     const measurements = await db.Measurement.findAll({ where: { user_id: userId } });
@@ -134,6 +167,12 @@ app.get('/api/tracking/:userId', async (req, res) => {
 app.get('/api/latest-measurement/:userId', async (req, res) => {
   logger.debug('Get latest measurement for user ID:', req.params.userId);
   const { userId } = req.params;
+
+  const { error } = userIdSchema.validate({ userId });
+  if (error) {
+    logger.warn('Invalid user ID', req.params);
+    return res.status(400).json({ error: error.details[0].message });
+  }
 
   try {
     const latestMeasurement = await db.Measurement.findOne({
@@ -188,12 +227,30 @@ app.get('/api/exercises/:exerciseId', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+const exerciseSchema = Joi.object({
+  training_id: Joi.number().integer().positive().required(),
+  sets_done: Joi.number().integer().min(0).optional(),
+  reps_done: Joi.number().integer().min(0).optional(),
+  last_set_weight: Joi.number().min(0).optional()
+});
+
+const workoutSchema = Joi.object({
+  workoutId: Joi.number().integer().positive().required(),
+  exercises: Joi.array().items(exerciseSchema).required(),
+  task_id: Joi.number().integer().positive().optional()
+});
 
 // Define the save workout data route
 app.post('/api/workouts/save', async (req, res) => {
   logger.debug('Save workout data');
   const { workoutId, exercises } = req.body;
 
+  const { error } = workoutSchema.validate({ workoutId, exercises, task_id });
+  if (error) {
+    logger.warn('Invalid input for saving workout data', req.body);
+    return res.status(400).json({ error: error.details[0].message });
+  }
+  
   try {
     for (const exercise of exercises) {
       await db.Training.update({

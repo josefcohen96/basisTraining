@@ -28,18 +28,14 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    due_date: {
+    createdat: {
       type: DataTypes.DATE,
       allowNull: true,
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      allowNull: false,
       defaultValue: Sequelize.NOW,
     },
-    updatedAt: {
+    updatedat: {
       type: DataTypes.DATE,
-      allowNull: false,
+      allowNull: true,
       defaultValue: Sequelize.NOW,
     },
   }, {
@@ -54,7 +50,6 @@ module.exports = (sequelize) => {
     User.hasMany(models.Measurement, { foreignKey: 'user_id' });
     User.hasMany(models.NutritionPlan, { foreignKey: 'user_id' });
     User.hasMany(models.Course, { foreignKey: 'user_id' });
-
   };
 
   return User;
