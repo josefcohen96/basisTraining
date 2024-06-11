@@ -1,7 +1,8 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  const NutritionPlan = sequelize.define('NutritionPlan', {
+  class NutritionPlan extends Sequelize.Model {}
+  NutritionPlan.init({
     plan_id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
@@ -9,7 +10,7 @@ module.exports = (sequelize) => {
     },
     user_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'users',
         key: 'user_id',
@@ -28,9 +29,13 @@ module.exports = (sequelize) => {
       allowNull: true,
     },
   }, {
+    sequelize,
     tableName: 'nutrition_plan',
     timestamps: false,
   });
+
+  NutritionPlan.associate = function(models) {
+  };
 
   return NutritionPlan;
 };

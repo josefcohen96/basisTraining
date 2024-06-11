@@ -12,6 +12,8 @@ const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const courseRoutes = require('./routes/courseRoutes');
 const workoutRoutes = require('./routes/workoutRoutes');
+const nutritionPlanRoutes = require('./routes/nutritionPlanRoutes');
+
 const Joi = require('joi');
 
 require('dotenv').config();
@@ -34,6 +36,9 @@ app.use('/api/courses', courseRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api', workoutRoutes);
+app.use('/api',nutritionPlanRoutes);
+const { Sequelize } = require('sequelize');
+
 
 const resetDatabase = async () => {
   try {
@@ -46,6 +51,51 @@ const resetDatabase = async () => {
   }
 };
 // resetDatabase();
+// const checkTableExists = async (tableName) => {
+//   try {
+//     const result = await db.sequelize.query(
+//       `SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name = :tableName`,
+//       {
+//         replacements: { tableName },
+//         type: Sequelize.QueryTypes.SELECT,
+//       }
+//     );
+
+//     if (result.length > 0) {
+//       console.log(`Table "${tableName}" exists.`);
+//     } else {
+//       console.log(`Table "${tableName}" does not exist.`);
+//     }
+    
+//   } catch (error) {
+//     console.error('Error checking table existence:', error);
+//   } finally {
+//     await db.sequelize.close();
+//   }
+// };
+
+// const getTableColumns = async (tableName) => {
+//   try {
+//     const result = await db.sequelize.query(
+//       `SELECT column_name, data_type FROM information_schema.columns WHERE table_schema = 'public' AND table_name = :tableName`,
+//       {
+//         replacements: { tableName },
+//         type: Sequelize.QueryTypes.SELECT,
+//       }
+//     );
+
+//     console.log(`Columns in table "${tableName}":`);
+//     result.forEach((column) => {
+//       console.log(`- ${column.column_name} (${column.data_type})`);
+//     });
+//   } catch (error) {
+//     console.error('Error fetching table columns:', error);
+//   } finally {
+//     await db.sequelize.close();
+//   }
+// };
+// getTableColumns('courses');
+// // checkTableExists('courses');
 
 const syncDatabase = async () => {
   try {
@@ -67,6 +117,9 @@ const syncDatabase = async () => {
 syncDatabase();
 // Sync models to ensure database is up-to-date
 db.sequelize.sync({ alter: true }).then(() => {
+  // insertPdfToNutritionPlan('nutrition-plans/3.pdf').then(() => {
+  //   db.sequelize.close();
+  // });
   console.log('Database synced');
 });
 // General logging middleware to log all requests
@@ -74,6 +127,23 @@ app.use((req, res, next) => {
   console.log(`Incoming request: ${req.method} ${req.url}`);
   next();
 });
+
+// generate a function to insert pdf to nutrition table in database
+const insertPdfToNutritionPlan = async (pdf) => {
+  console.log('Insert PDF to nutrition plan:', pdf)
+  try {
+    const newPlan = await db.NutritionPlan.create({
+      plan_name: 'dinner plan',
+      plan_description: 'A plan for dinner meals',
+      pdf_link: pdf,
+    });
+
+    return newPlan;
+  } catch (error) {
+    console.error('Error inserting new nutrition plan:', error.message);
+    return null;
+  }
+}
 
 
 app.get('/api/pdf', (req, res) => {
@@ -237,7 +307,6 @@ const exerciseSchema = Joi.object({
 const workoutSchema = Joi.object({
   workoutId: Joi.number().integer().positive().required(),
   exercises: Joi.array().items(exerciseSchema).required(),
-  task_id: Joi.number().integer().positive().optional()
 });
 
 // Define the save workout data route
@@ -250,7 +319,7 @@ app.post('/api/workouts/save', async (req, res) => {
     logger.warn('Invalid input for saving workout data', req.body);
     return res.status(400).json({ error: error.details[0].message });
   }
-  
+
   try {
     for (const exercise of exercises) {
       await db.Training.update({
@@ -288,7 +357,6 @@ app.get('/api/exercises', async (req, res) => {
   }
 });
 
-
 app.get('/api/workouts/:workoutId/exercises', async (req, res) => {
   console.log('Get exercises for workout ID:', req.params.workoutId)
   logger.debug('Get exercises for workout ID:', req.params.workoutId);
@@ -309,7 +377,6 @@ app.get('/api/workouts/:workoutId/exercises', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch exercises' });
   }
 });
-
 
 // Start the server
 app.listen(port, () => {

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import './Courses.css';  // Import the CSS file
 
 const UserCourses = () => {
   const [courses, setCourses] = useState([]);
@@ -11,7 +12,7 @@ const UserCourses = () => {
   }, []);
 
   const fetchCourses = async () => {
-    const response = await axios.get('http://localhost:3000/api/courses');
+    const response = await axios.get('http://localhost:5000/api/courses');
     setCourses(response.data.filter(course => course.visible));
   };
 
@@ -26,6 +27,7 @@ const UserCourses = () => {
             </Link>
             <p>{course.description}</p>
             <p>{course.duration}</p>
+            <button className="join-course-button">Join Course Now</button>
           </li>
         ))}
       </ul>

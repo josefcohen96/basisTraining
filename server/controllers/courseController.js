@@ -3,7 +3,9 @@ const { Course } = require('../models');
 // Get all courses
 const getAllCourses = async (req, res) => {
   try {
+    console.log("getAllCourses");
     const courses = await Course.findAll();
+    console.log("courses",courses)
     res.json(courses);
   } catch (error) {
     res.status(500).json({ error: error.message });

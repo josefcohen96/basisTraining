@@ -1,0 +1,24 @@
+.nutrition-plan-list {
+    padding: 20px;
+  }
+  
+  .nutrition-plan-list h2 {
+    text-align: center;
+  }
+  
+  .nutrition-plan-list ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .nutrition-plan-list li {
+    background-color: #f4f4f4;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+  .nutrition-plan-list li p {
+    margin: 5px 0;
+  }
+  

@@ -1,6 +1,13 @@
-// models/course.js
-module.exports = (sequelize, DataTypes) => {
-  const Course = sequelize.define('Course', {
+const { Sequelize, DataTypes } = require('sequelize');
+
+module.exports = (sequelize) => {
+  class Course extends Sequelize.Model {}
+  Course.init({
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -19,11 +26,18 @@ module.exports = (sequelize, DataTypes) => {
     },
     visible: {
       type: DataTypes.BOOLEAN,
+      allowNull: false,
       defaultValue: true,
     },
   }, {
-    timestamps: true,
+    sequelize,
+    tableName: 'courses',
+    timestamps: false,  // Disable timestamps
   });
+
+  Course.associate = (models) => {
+    // Define associations here if any
+  };
 
   return Course;
 };

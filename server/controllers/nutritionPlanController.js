@@ -1,6 +1,5 @@
 const db = require('../models');
 const path = require('path');
-const fs = require('fs');
 
 // Create a new nutrition plan
 exports.createNutritionPlan = async (req, res) => {
@@ -40,7 +39,8 @@ exports.getAllNutritionPlans = async (req, res) => {
 exports.getNutritionPlanById = async (req, res) => {
   const { planId } = req.params;
   try {
-    const plan = await db.NutritionPlan.findByPk(planId);
+    const plan = await db.NutritionPlan.findOne({ where: { plan_id: planId } });
+    console.log("plannnnnnnnn",plan);
     if (plan) {
       res.status(200).json(plan);
     } else {
@@ -48,5 +48,20 @@ exports.getNutritionPlanById = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ error: 'Database error' });
+  }
+};
+
+// Fetch the PDF file for a nutrition plan by ID
+exports.getNutritionPlanPdf = async (req, res) => {
+  const { planId } = req.params;
+  try {
+    const nutritionPlan = await db.NutritionPlan.findByPk(planId);
+    if (!nutritionPlan || !nutritionPlan.pdf_link) {
+      return res.status(404).json({ error: 'Nutrition plan not found or PDF link missing' });
+    }
+    const pdfPath = path.join(__dirname, '..', nutritionPlan.pdf_link);
+    res.sendFile(pdfPath);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };
