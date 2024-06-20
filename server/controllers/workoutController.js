@@ -1,5 +1,4 @@
 const { Workout } = require('../models');
-const { Training } = require('../models');
 
 
 

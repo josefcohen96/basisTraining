@@ -5,7 +5,6 @@ const logger = require('./logger');
 const path = require('path');
 const swaggerUi = require('swagger-ui-express');
 const swaggerFile = require('./swagger-output.json');
-const storage = multer.memoryStorage();
 const port = 5000;
 const app = express();
 const authRoutes = require('./routes/authRoutes');
@@ -131,21 +130,21 @@ app.use((req, res, next) => {
 });
 
 // generate a function to insert pdf to nutrition table in database
-const insertPdfToNutritionPlan = async (pdf) => {
-  console.log('Insert PDF to nutrition plan:', pdf)
-  try {
-    const newPlan = await db.NutritionPlan.create({
-      plan_name: 'dinner plan',
-      plan_description: 'A plan for dinner meals',
-      pdf_link: pdf,
-    });
+// const insertPdfToNutritionPlan = async (pdf) => {
+//   console.log('Insert PDF to nutrition plan:', pdf)
+//   try {
+//     const newPlan = await db.NutritionPlan.create({
+//       plan_name: 'dinner plan',
+//       plan_description: 'A plan for dinner meals',
+//       pdf_link: pdf,
+//     });
 
-    return newPlan;
-  } catch (error) {
-    console.error('Error inserting new nutrition plan:', error.message);
-    return null;
-  }
-};
+//     return newPlan;
+//   } catch (error) {
+//     console.error('Error inserting new nutrition plan:', error.message);
+//     return null;
+//   }
+// };
 
 app.get('/api/pdf', (req, res) => {
   console.log('Get PDF file')
@@ -314,12 +313,6 @@ const workoutSchema = Joi.object({
 app.post('/api/workouts/save', async (req, res) => {
   logger.debug('Save workout data');
   const { workoutId, exercises } = req.body;
-
-  const { error } = workoutSchema.validate({ workoutId, exercises, task_id });
-  if (error) {
-    logger.warn('Invalid input for saving workout data', req.body);
-    return res.status(400).json({ error: error.details[0].message });
-  }
 
   try {
     for (const exercise of exercises) {

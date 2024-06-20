@@ -46,6 +46,7 @@ exports.addMeasurement = async (req, res) => {
       ...measurements
     });
 
+
     if (req.files) {
       req.files.forEach(async (file, index) => {
         const newFileName = `photo${index + 1}`;
@@ -55,6 +56,9 @@ exports.addMeasurement = async (req, res) => {
 
       await measurement.save();
     }
+    // Update the task status int tasks table on the db to 'Finish'
+    await db.Task.update({ task_status: 'Finish' }, { where: { task_id: task_id } });
+
 
     res.status(201).json(measurement);
   } catch (error) {

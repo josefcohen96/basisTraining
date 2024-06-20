@@ -10,7 +10,6 @@ exports.createNutritionPlan = async (req, res) => {
   if (!file) {
     return res.status(400).json({ error: 'No file uploaded' });
   }
-
   try {
     const pdf_link = file.path;
     const newPlan = await db.NutritionPlan.create({

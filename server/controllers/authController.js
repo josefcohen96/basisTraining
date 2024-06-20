@@ -1,15 +1,14 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const db = require('../models');
 const User = db.User;
 const UserDetail = db.UserDetail;
 const Task = db.Task;
 const logger = require('../logger');
 
+const secretKey = process.env.JWT_SECRET_KEY || 'your-secret-key';
 
 exports.register = async (req, res) => {
-  console.log("Register route");
-  logger.debug('Register route');
-
   const {
     name, email, password, phone, age, height, weight, trainingYears, trainingFrequency, preferredTrainingLocation,
     homeEquipment, desiredEquipment, strengthTrainingDescription, preferredFocusAreas, favoriteCardio,
@@ -19,11 +18,8 @@ exports.register = async (req, res) => {
     additionalNotes, medicalStatement, signature, termsAccepted, mailingAccepted
   } = req.body;
 
-  console.log('Request body:', req.body);
-
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    logger.debug('Password hashed successfully.');
 
     const newUser = await User.create({
       name,
@@ -32,11 +28,11 @@ exports.register = async (req, res) => {
       role: 'user',
       status: 'active',
       createdAt: new Date(),
-      updatedAt: new Date()    
+      updatedAt: new Date()
     });
-    
+
     const userId = newUser.user_id;
-    logger.info('User inserted successfully with ID:', userId);
+    const token = jwt.sign({ id: userId, email: newUser.email }, secretKey, { expiresIn: '1h' });
 
     await UserDetail.create({
       user_id: userId,
@@ -79,8 +75,6 @@ exports.register = async (req, res) => {
       mailing_accepted: mailingAccepted
     });
 
-    logger.info('User details inserted successfully');
-
     const tasks = [
       {
         user_id: userId,
@@ -120,11 +114,8 @@ exports.register = async (req, res) => {
       await Task.create(task);
     }
 
-    logger.info('Tasks inserted successfully for user ID:', userId);
-    res.status(201).json(newUser);
+    res.status(201).json({ newUser, token });
   } catch (error) {
-    logger.error('Error during user registration:', error.message);
-    console.log('Error details:', error); // Log the full error for debugging
     res.status(400).json({ error: error.message });
   }
 };
@@ -135,7 +126,8 @@ exports.login = async (req, res) => {
   try {
     const user = await User.findOne({ where: { email } });
     if (user && await bcrypt.compare(password, user.password)) {
-      res.json({ id: user.user_id, name: user.name, email: user.email, role: user.role });
+      const token = jwt.sign({ id: user.user_id, email: user.email }, secretKey, { expiresIn: '1h' });
+      res.json({ id: user.user_id, name: user.name, email: user.email, role: user.role, token });
     } else {
       res.status(400).json({ error: 'Invalid credentials' });
     }

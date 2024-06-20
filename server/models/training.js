@@ -1,7 +1,8 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  const Training = sequelize.define('Training', {
+  class Training extends Sequelize.Model {}
+  Training.init({
     training_id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
@@ -56,11 +57,12 @@ module.exports = (sequelize) => {
       allowNull: true,
     },
   }, {
+    sequelize,
     tableName: 'training',
     timestamps: false,
   });
 
-  Training.associate = (models) => {
+  Training.associate = function(models) {
     Training.belongsTo(models.Exercise, { foreignKey: 'exercise_id' });
   };
 

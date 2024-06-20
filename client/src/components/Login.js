@@ -20,11 +20,8 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    console.log("reactURL",process.env.REACT_APP_API_URL);
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/login`, { email, password }, {
-
-      });
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/login`, { email, password });
       console.log('Login Success:', response.data);
 
       login(response.data, rememberMe); // Pass the rememberMe flag
