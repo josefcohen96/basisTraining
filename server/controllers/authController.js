@@ -4,7 +4,7 @@ const db = require('../models');
 const User = db.User;
 const UserDetail = db.UserDetail;
 const Task = db.Task;
-const logger = require('../logger');
+// const logger = require('../logger');
 
 const secretKey = process.env.JWT_SECRET_KEY || 'your-secret-key';
 

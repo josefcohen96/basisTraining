@@ -152,225 +152,227 @@ app.get('/api/pdf', (req, res) => {
   res.sendFile(filePath);
 });
 
-const userIdSchema = Joi.object({
-  userId: Joi.number().integer().positive().required()
-});
+// const userIdSchema = Joi.object({
+//   userId: Joi.number().integer().positive().required()
+// });
+ 
+// // Define the get tasks for a user route
+// app.get('/api/tasks/:userId', async (req, res) => {
+//   logger.debug('Get tasks for user');
+//   const { userId } = req.params;
 
-// Define the get tasks for a user route
-app.get('/api/tasks/:userId', async (req, res) => {
-  logger.debug('Get tasks for user');
-  const { userId } = req.params;
+//   const { error } = userIdSchema.validate({ userId });
+//   if (error) {
+//     logger.warn('Invalid user ID', req.params);
+//     return res.status(400).json({ error: error.details[0].message });
+//   }
 
-  const { error } = userIdSchema.validate({ userId });
-  if (error) {
-    logger.warn('Invalid user ID', req.params);
-    return res.status(400).json({ error: error.details[0].message });
-  }
+//   try {
+//     const tasks = await db.Task.findAll({ where: { user_id: userId } });
+//     logger.info('Fetched tasks for user ID:', userId);
+//     res.json(tasks);
+//   } catch (error) {
+//     logger.error('Error fetching tasks for user ID:', userId, error.message);
+//     res.status(500).json({ error: error.message });
+//   }
+// });
+// // const taskSchema = Joi.object({
+// //   task_status: Joi.string().valid('pending', 'completed', 'failed').required(),
+// //   task_type: Joi.string().valid('measure', 'food', 'train').required()
+// // });
 
-  try {
-    const tasks = await db.Task.findAll({ where: { user_id: userId } });
-    logger.info('Fetched tasks for user ID:', userId);
-    res.json(tasks);
-  } catch (error) {
-    logger.error('Error fetching tasks for user ID:', userId, error.message);
-    res.status(500).json({ error: error.message });
-  }
-});
-// const taskSchema = Joi.object({
-//   task_status: Joi.string().valid('pending', 'completed', 'failed').required(),
-//   task_type: Joi.string().valid('measure', 'food', 'train').required()
+// // Define the update task status route
+// app.put('/api/tasks/:taskId', async (req, res) => {
+//   logger.debug('Update task status', req.body, req.params);
+//   const { task_status } = req.body;
+//   const { taskId } = req.params;
+//   // print the types of taskId and task_status
+//   console.log('taskId:', typeof taskId, 'task_status:', typeof task_status);
+//   // const { error } = taskSchema.validate({ task_status, task_type });
+//   // if (error) {
+//   //   logger.warn('Invalid input for updating task', req.body, req.params);
+//   //   return res.status(400).json({ error: error.details[0].message });
+//   // }
+
+//   try {
+//     const [updated] = await db.Task.update({ task_status }, { where: { task_id: taskId } });
+//     if (updated) {
+//       const updatedTask = await db.Task.findOne({ where: { task_id: taskId } });
+//       logger.info('Task status updated successfully for task ID:', taskId);
+//       res.json(updatedTask);
+//     } else {
+//       throw new Error('Task not found');
+//     }
+//   } catch (error) {
+//     logger.error('Error updating task status for task ID:', taskId, error.message);
+//     res.status(500).json({ error: error.message });
+//   }
 // });
 
-// Define the update task status route
-app.put('/api/tasks/:taskId', async (req, res) => {
-  logger.debug('Update task status', req.body, req.params);
-  const { task_status } = req.body;
-  const { taskId } = req.params;
-  // print the types of taskId and task_status
-  console.log('taskId:', typeof taskId, 'task_status:', typeof task_status);
-  // const { error } = taskSchema.validate({ task_status, task_type });
-  // if (error) {
-  //   logger.warn('Invalid input for updating task', req.body, req.params);
-  //   return res.status(400).json({ error: error.details[0].message });
-  // }
 
-  try {
-    const [updated] = await db.Task.update({ task_status }, { where: { task_id: taskId } });
-    if (updated) {
-      const updatedTask = await db.Task.findOne({ where: { task_id: taskId } });
-      logger.info('Task status updated successfully for task ID:', taskId);
-      res.json(updatedTask);
-    } else {
-      throw new Error('Task not found');
-    }
-  } catch (error) {
-    logger.error('Error updating task status for task ID:', taskId, error.message);
-    res.status(500).json({ error: error.message });
-  }
-});
+// // Define the get tracking metrics for a user route
+// app.get('/api/tracking/:userId', async (req, res) => {
+//   console.log('Get tracking metrics for user ID:', req.params.userId)
+//   logger.debug('Get tracking metrics for user ID:', req.params.userId);
+//   const { userId } = req.params;
 
 
-// Define the get tracking metrics for a user route
-app.get('/api/tracking/:userId', async (req, res) => {
-  console.log('Get tracking metrics for user ID:', req.params.userId)
-  logger.debug('Get tracking metrics for user ID:', req.params.userId);
-  const { userId } = req.params;
+//   const { error } = userIdSchema.validate({ userId });
+//   if (error) {
+//     logger.warn('Invalid user ID', req.params);
+//     return res.status(400).json({ error: error.details[0].message });
+//   }
+
+//   try {
+//     const measurements = await db.Measurement.findAll({ where: { user_id: userId } });
+//     logger.info('Fetched tracking metrics for user ID:', userId);
+//     res.json(measurements);
+//   } catch (error) {
+//     logger.error('Error fetching tracking metrics for user ID:', userId, error.message);
+//     res.status(500).json({ error: error.message });
+//   }
+// });
+
+// // Define the get latest measurement for a user route
+// app.get('/api/latest-measurement/:userId', async (req, res) => {
+//   logger.debug('Get latest measurement for user ID:', req.params.userId);
+//   const { userId } = req.params;
+
+//   const { error } = userIdSchema.validate({ userId });
+//   if (error) {
+//     logger.warn('Invalid user ID', req.params);
+//     return res.status(400).json({ error: error.details[0].message });
+//   }
+
+//   try {
+//     const latestMeasurement = await db.Measurement.findOne({
+//       where: { user_id: userId },
+//       order: [['date', 'DESC']]
+//     });
+//     logger.info('Fetched latest measurement for user ID:', userId);
+//     res.json(latestMeasurement);
+//   } catch (error) {
+//     logger.error('Error fetching latest measurement for user ID:', userId, error.message);
+//     res.status(500).json({ error: error.message });
+//   }
+// });
+
+// // Define the add new food entry route
+// app.post('/api/food-entry', async (req, res) => {
+//   logger.debug('Add new food entry');
+//   const { user_id, description, task_id } = req.body;
+
+//   try {
+//     const newEntry = await db.ResultTracking.create({
+//       task_id,
+//       eating_day_free_txt: description,
+//       result_dt: new Date(), // Assuming result_dt is required and you want to set it to the current date
+//     });
+//     console.log(newEntry);
+//     // Update the task status to 'Finish'
+//     if (task_id) {
+//       await db.Task.update({ task_status: 'Finish' }, { where: { task_id } });
+//     }
+
+//     logger.info('New food entry added successfully');
+//     res.status(200).json({ message: 'New food entry added successfully', id: newEntry.result_id });
+//   } catch (error) {
+//     logger.error('Error inserting new food entry:', error.message);
+//     res.status(500).json({ error: 'Database error' });
+//   }
+// });
 
 
-  const { error } = userIdSchema.validate({ userId });
-  if (error) {
-    logger.warn('Invalid user ID', req.params);
-    return res.status(400).json({ error: error.details[0].message });
-  }
+// // Define the get exercise by ID route
+// app.get('/api/exercises/:exerciseId', async (req, res) => {
+//   logger.debug('Get exercise by ID:', req.params.exerciseId);
+//   const { exerciseId } = req.params;
 
-  try {
-    const measurements = await db.Measurement.findAll({ where: { user_id: userId } });
-    logger.info('Fetched tracking metrics for user ID:', userId);
-    res.json(measurements);
-  } catch (error) {
-    logger.error('Error fetching tracking metrics for user ID:', userId, error.message);
-    res.status(500).json({ error: error.message });
-  }
-});
+//   try {
+//     const exercise = await db.Exercise.findOne({ where: { exercise_id: exerciseId } });
+//     logger.info('Fetched exercise for ID:', exerciseId);
+//     res.json(exercise);
+//   } catch (error) {
+//     logger.error('Error fetching exercise for ID:', exerciseId, error.message);
+//     res.status(500).json({ error: 'Internal server error' });
+//   }
+// });
+// const exerciseSchema = Joi.object({
+//   training_id: Joi.number().integer().positive().required(),
+//   sets_done: Joi.number().integer().min(0).optional(),
+//   reps_done: Joi.number().integer().min(0).optional(),
+//   last_set_weight: Joi.number().min(0).optional()
+// });
 
-// Define the get latest measurement for a user route
-app.get('/api/latest-measurement/:userId', async (req, res) => {
-  logger.debug('Get latest measurement for user ID:', req.params.userId);
-  const { userId } = req.params;
+// const workoutSchema = Joi.object({
+//   workoutId: Joi.number().integer().positive().required(),
+//   exercises: Joi.array().items(exerciseSchema).required(),
+// });
 
-  const { error } = userIdSchema.validate({ userId });
-  if (error) {
-    logger.warn('Invalid user ID', req.params);
-    return res.status(400).json({ error: error.details[0].message });
-  }
+// // Define the save workout data route
+// app.post('/api/workouts/save', async (req, res) => {
+//   logger.debug('Save workout data');
+//   const { workoutId, exercises } = req.body;
 
-  try {
-    const latestMeasurement = await db.Measurement.findOne({
-      where: { user_id: userId },
-      order: [['date', 'DESC']]
-    });
-    logger.info('Fetched latest measurement for user ID:', userId);
-    res.json(latestMeasurement);
-  } catch (error) {
-    logger.error('Error fetching latest measurement for user ID:', userId, error.message);
-    res.status(500).json({ error: error.message });
-  }
-});
+//   try {
+//     for (const exercise of exercises) {
+//       await db.Training.update({
+//         sets_done: exercise.sets_done || 0,
+//         reps_done: exercise.reps_done || 0,
+//         last_set_weight: exercise.last_set_weight || 0
+//       }, {
+//         where: { training_id: exercise.training_id }
+//       });
+//     }
 
-// Define the add new food entry route
-app.post('/api/food-entry', async (req, res) => {
-  logger.debug('Add new food entry');
-  const { user_id, description, task_id } = req.body;
+//     await db.Workout.update({ status: 'completed' }, { where: { workout_id: workoutId } });
 
-  try {
-    const newEntry = await db.ResultTracking.create({
-      task_id,
-      eating_day_free_txt: description,
-      result_dt: new Date(), // Assuming result_dt is required and you want to set it to the current date
-    });
-    console.log(newEntry);
-    // Update the task status to 'Finish'
-    if (task_id) {
-      await db.Task.update({ task_status: 'Finish' }, { where: { task_id } });
-    }
+//     if (req.body.task_id) {
+//       await db.Task.update({ task_status: 'Finish' }, { where: { task_id: req.body.task_id } });
+//     }
 
-    logger.info('New food entry added successfully');
-    res.status(200).json({ message: 'New food entry added successfully', id: newEntry.result_id });
-  } catch (error) {
-    logger.error('Error inserting new food entry:', error.message);
-    res.status(500).json({ error: 'Database error' });
-  }
-});
+//     logger.info('Workout data saved successfully for workout ID:', workoutId);
+//     res.status(200).json({ message: 'Workout data saved successfully' });
+//   } catch (error) {
+//     logger.error('Error saving workout data for workout ID:', workoutId, error.message);
+//     res.status(500).json({ error: 'Failed to save workout data' });
+//   }
+// });
 
+// app.get('/api/exercises', async (req, res) => {
+//   logger.debug('Get all exercises');
+//   try {
+//     const exercises = await db.Exercise.findAll();
+//     logger.info('Fetched all exercises');
+//     res.json(exercises);
+//   } catch (error) {
+//     logger.error('Error fetching exercises:', error.message);
+//     res.status(500).json({ error: 'Failed to fetch exercises' });
+//   }
+// });
 
-// Define the get exercise by ID route
-app.get('/api/exercises/:exerciseId', async (req, res) => {
-  logger.debug('Get exercise by ID:', req.params.exerciseId);
-  const { exerciseId } = req.params;
+// app.get('/api/workouts/:workoutId/exercises', async (req, res) => {
+//   console.log('Get exercises for workout ID:', req.params.workoutId)
+//   logger.debug('Get exercises for workout ID:', req.params.workoutId);
+//   const { workoutId } = req.params;
+//   try {
+//     const exercises = await db.Training.findAll({
+//       where: { workout_id: workoutId },
+//       include: [{
+//         model: db.Exercise,
+//         attributes: ['exercise_name'], // Include only the exercise name from the Exercise table
+//       }],
+//     });
+//     console.log(exercises);
+//     logger.info('Fetched exercises for workout ID:', workoutId);
+//     res.json(exercises);
+//   } catch (error) {
+//     logger.error('Error fetching exercises for workout ID:', workoutId, error.message);
+//     res.status(500).json({ error: 'Failed to fetch exercises' });
+//   }
+// });
 
-  try {
-    const exercise = await db.Exercise.findOne({ where: { exercise_id: exerciseId } });
-    logger.info('Fetched exercise for ID:', exerciseId);
-    res.json(exercise);
-  } catch (error) {
-    logger.error('Error fetching exercise for ID:', exerciseId, error.message);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-const exerciseSchema = Joi.object({
-  training_id: Joi.number().integer().positive().required(),
-  sets_done: Joi.number().integer().min(0).optional(),
-  reps_done: Joi.number().integer().min(0).optional(),
-  last_set_weight: Joi.number().min(0).optional()
-});
-
-const workoutSchema = Joi.object({
-  workoutId: Joi.number().integer().positive().required(),
-  exercises: Joi.array().items(exerciseSchema).required(),
-});
-
-// Define the save workout data route
-app.post('/api/workouts/save', async (req, res) => {
-  logger.debug('Save workout data');
-  const { workoutId, exercises } = req.body;
-
-  try {
-    for (const exercise of exercises) {
-      await db.Training.update({
-        sets_done: exercise.sets_done || 0,
-        reps_done: exercise.reps_done || 0,
-        last_set_weight: exercise.last_set_weight || 0
-      }, {
-        where: { training_id: exercise.training_id }
-      });
-    }
-
-    await db.Workout.update({ status: 'completed' }, { where: { workout_id: workoutId } });
-
-    if (req.body.task_id) {
-      await db.Task.update({ task_status: 'Finish' }, { where: { task_id: req.body.task_id } });
-    }
-
-    logger.info('Workout data saved successfully for workout ID:', workoutId);
-    res.status(200).json({ message: 'Workout data saved successfully' });
-  } catch (error) {
-    logger.error('Error saving workout data for workout ID:', workoutId, error.message);
-    res.status(500).json({ error: 'Failed to save workout data' });
-  }
-});
-
-app.get('/api/exercises', async (req, res) => {
-  logger.debug('Get all exercises');
-  try {
-    const exercises = await db.Exercise.findAll();
-    logger.info('Fetched all exercises');
-    res.json(exercises);
-  } catch (error) {
-    logger.error('Error fetching exercises:', error.message);
-    res.status(500).json({ error: 'Failed to fetch exercises' });
-  }
-});
-
-app.get('/api/workouts/:workoutId/exercises', async (req, res) => {
-  console.log('Get exercises for workout ID:', req.params.workoutId)
-  logger.debug('Get exercises for workout ID:', req.params.workoutId);
-  const { workoutId } = req.params;
-  try {
-    const exercises = await db.Training.findAll({
-      where: { workout_id: workoutId },
-      include: [{
-        model: db.Exercise,
-        attributes: ['exercise_name'], // Include only the exercise name from the Exercise table
-      }],
-    });
-    console.log(exercises);
-    logger.info('Fetched exercises for workout ID:', workoutId);
-    res.json(exercises);
-  } catch (error) {
-    logger.error('Error fetching exercises for workout ID:', workoutId, error.message);
-    res.status(500).json({ error: 'Failed to fetch exercises' });
-  }
-});
+// need to add a display a last month measurement for a user
 
 // Start the server
 app.listen(port, () => {
