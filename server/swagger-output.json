@@ -23,7 +23,7 @@
     },
     "/api/courses/{id}": {
       "get": {
-        "description": "",
+        "description": "gets the course by id",
         "parameters": [
           {
             "name": "id",
@@ -88,7 +88,7 @@
         }
       },
       "delete": {
-        "description": "",
+        "description": "deleting a course by id",
         "parameters": [
           {
             "name": "id",
@@ -112,7 +112,7 @@
     },
     "/api/courses/": {
       "get": {
-        "description": "",
+        "description": "get all courses",
         "responses": {
           "200": {
             "description": "OK"
@@ -312,10 +312,11 @@
               "type": "object",
               "properties": {
                 "email": {
-                  "example": "any"
+                  "example": "tomer@gmail.com"
                 },
                 "password": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "1"
                 }
               }
             }
@@ -336,7 +337,7 @@
     },
     "/api/admin/users": {
       "get": {
-        "description": "",
+        "description": "get list of users",
         "parameters": [
           {
             "name": "admin-user-id",
@@ -359,18 +360,20 @@
     },
     "/api/admin/users/{userId}/workouts": {
       "get": {
-        "description": "",
+        "description": "get list of workouts for a specific user",
         "parameters": [
           {
             "name": "userId",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "example": "3"
           },
           {
             "name": "admin-user-id",
             "in": "header",
-            "type": "string"
+            "type": "string",
+            "example": "1"
           }
         ],
         "responses": {
@@ -439,18 +442,20 @@
     },
     "/api/admin/workouts/{workoutId}/training": {
       "get": {
-        "description": "",
+        "description": "get list of training for a specific workout",
         "parameters": [
           {
             "name": "workoutId",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "example": "1"
           },
           {
             "name": "admin-user-id",
             "in": "header",
-            "type": "string"
+            "type": "string",
+            "example": "1"
           }
         ],
         "responses": {
@@ -754,13 +759,14 @@
     },
     "/api/workouts/{workoutId}/exercises": {
       "get": {
-        "description": "",
+        "description": "get workout exercises for specific workout",
         "parameters": [
           {
             "name": "workoutId",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "example": "1"
           }
         ],
         "responses": {
@@ -775,7 +781,7 @@
     },
     "/api/exercises/{exerciseId}": {
       "get": {
-        "description": "",
+        "description": "gets the exercise by id",
         "parameters": [
           {
             "name": "exerciseId",
@@ -796,13 +802,14 @@
     },
     "/api/workouts/{userId}": {
       "get": {
-        "description": "",
+        "description": "get list of workout for specific user",
         "parameters": [
           {
             "name": "userId",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "example": "3"
           }
         ],
         "responses": {
@@ -820,7 +827,7 @@
     },
     "/api/exercises": {
       "get": {
-        "description": "",
+        "description": "get list of exercises",
         "responses": {
           "200": {
             "description": "OK"
@@ -833,7 +840,7 @@
     },
     "/api/nutrition-plans/{userId}": {
       "post": {
-        "description": "",
+        "description": "Add nutrition plan for a specific user",
         "parameters": [
           {
             "name": "userId",
@@ -842,20 +849,29 @@
             "type": "string"
           },
           {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "plan_name": {
-                  "example": "any"
-                },
-                "plan_description": {
-                  "example": "any"
-                }
-              }
-            }
+            "name": "plan_name",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": "The name of the nutrition plan"
+          },
+          {
+            "name": "plan_description",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": "The description of the nutrition plan"
+          },
+          {
+            "name": "file",
+            "in": "formData",
+            "required": true,
+            "type": "file",
+            "description": "The file to upload"
           }
+        ],
+        "consumes": [
+          "multipart/form-data"
         ],
         "responses": {
           "201": {
@@ -872,7 +888,7 @@
     },
     "/api/nutrition-plans": {
       "get": {
-        "description": "",
+        "description": "get list of nutrition plans for all users",
         "responses": {
           "200": {
             "description": "OK"
@@ -885,7 +901,7 @@
     },
     "/api/nutrition-plans/{planId}": {
       "get": {
-        "description": "",
+        "description": "get nutrition plan for planId",
         "parameters": [
           {
             "name": "planId",
@@ -909,7 +925,7 @@
     },
     "/api/nutrition-plans/{planId}/pdf": {
       "get": {
-        "description": "",
+        "description": "get the pdf of the nutrition planId",
         "parameters": [
           {
             "name": "planId",
@@ -933,7 +949,7 @@
     },
     "/api/users/{userId}/nutrition-plans": {
       "get": {
-        "description": "",
+        "description": "get the nutrition plan of a user by userId",
         "parameters": [
           {
             "name": "userId",
@@ -954,7 +970,7 @@
     },
     "/api/users/{userId}/measurements/last": {
       "get": {
-        "description": "",
+        "description": "get the lastest measurements of a user by userId",
         "parameters": [
           {
             "name": "userId",
@@ -978,7 +994,7 @@
     },
     "/api/users/{userId}/steps/last": {
       "get": {
-        "description": "",
+        "description": "get the last steps of a user by userId",
         "parameters": [
           {
             "name": "userId",
@@ -1002,26 +1018,98 @@
     },
     "/api/tracking": {
       "post": {
-        "description": "",
+        "description": "Adding a new measurement",
         "parameters": [
           {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "user_id": {
-                  "example": "any"
-                },
-                "task_id": {
-                  "example": "any"
-                },
-                "measurements": {
-                  "example": "any"
-                }
-              }
-            }
+            "name": "user_id",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": "User ID"
+          },
+          {
+            "name": "task_id",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": "Task ID"
+          },
+          {
+            "name": "date",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "format": "date",
+            "description": "Date of the measurement",
+            "example": "2024-06-24"
+          },
+          {
+            "name": "weight",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": "Weight of the user"
+          },
+          {
+            "name": "body_fat_percentage",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": "Body fat percentage"
+          },
+          {
+            "name": "chest",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": "Chest measurement"
+          },
+          {
+            "name": "waist",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": "Waist measurement"
+          },
+          {
+            "name": "thighr",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": "Right thigh measurement"
+          },
+          {
+            "name": "thighl",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": "Left thigh measurement"
+          },
+          {
+            "name": "armr",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": "Right arm measurement"
+          },
+          {
+            "name": "arml",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": "Left arm measurement"
+          },
+          {
+            "name": "photos",
+            "in": "formData",
+            "required": false,
+            "type": "file",
+            "description": "Photos of the measurement",
+            "collectionFormat": "multi"
           }
+        ],
+        "consumes": [
+          "multipart/form-data"
         ],
         "responses": {
           "201": {
@@ -1075,7 +1163,7 @@
         }
       },
       "get": {
-        "description": "",
+        "description": "get the asked steps for the specific task",
         "parameters": [
           {
             "name": "taskId",
@@ -1096,7 +1184,7 @@
     },
     "/api/tasks/{userId}": {
       "get": {
-        "description": "",
+        "description": "get list of tasks for specific user",
         "parameters": [
           {
             "name": "userId",
@@ -1153,7 +1241,7 @@
     },
     "/api/tracking/{userId}": {
       "get": {
-        "description": "",
+        "description": "get list of measurements for specific user",
         "parameters": [
           {
             "name": "userId",
@@ -1177,7 +1265,7 @@
     },
     "/api/latest-measurement/{userId}": {
       "get": {
-        "description": "",
+        "description": "get the lastest measurements of a user by userId",
         "parameters": [
           {
             "name": "userId",
@@ -1229,286 +1317,7 @@
         }
       }
     },
-    "/register": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "example": "any"
-                },
-                "email": {
-                  "example": "any"
-                },
-                "password": {
-                  "example": "any"
-                },
-                "phone": {
-                  "example": "any"
-                },
-                "age": {
-                  "example": "any"
-                },
-                "height": {
-                  "example": "any"
-                },
-                "weight": {
-                  "example": "any"
-                },
-                "trainingYears": {
-                  "example": "any"
-                },
-                "trainingFrequency": {
-                  "example": "any"
-                },
-                "preferredTrainingLocation": {
-                  "example": "any"
-                },
-                "homeEquipment": {
-                  "example": "any"
-                },
-                "desiredEquipment": {
-                  "example": "any"
-                },
-                "strengthTrainingDescription": {
-                  "example": "any"
-                },
-                "preferredFocusAreas": {
-                  "example": "any"
-                },
-                "favoriteCardio": {
-                  "example": "any"
-                },
-                "currentCardioRoutine": {
-                  "example": "any"
-                },
-                "injuries": {
-                  "example": "any"
-                },
-                "highestWeight": {
-                  "example": "any"
-                },
-                "favoriteFoods": {
-                  "example": "any"
-                },
-                "dislikedFoods": {
-                  "example": "any"
-                },
-                "foodTrackingMethod": {
-                  "example": "any"
-                },
-                "pastDiets": {
-                  "example": "any"
-                },
-                "dailyNutrition": {
-                  "example": "any"
-                },
-                "weekendNutrition": {
-                  "example": "any"
-                },
-                "favoriteRecipes": {
-                  "example": "any"
-                },
-                "alcoholConsumption": {
-                  "example": "any"
-                },
-                "medications": {
-                  "example": "any"
-                },
-                "sleepHours": {
-                  "example": "any"
-                },
-                "currentJob": {
-                  "example": "any"
-                },
-                "activityLevel": {
-                  "example": "any"
-                },
-                "sportsParticipation": {
-                  "example": "any"
-                },
-                "mirrorReflection": {
-                  "example": "any"
-                },
-                "longTermGoals": {
-                  "example": "any"
-                },
-                "motivationLevel": {
-                  "example": "any"
-                },
-                "commitmentDeclaration": {
-                  "example": "any"
-                },
-                "additionalNotes": {
-                  "example": "any"
-                },
-                "medicalStatement": {
-                  "example": "any"
-                },
-                "signature": {
-                  "example": "any"
-                },
-                "termsAccepted": {
-                  "example": "any"
-                },
-                "mailingAccepted": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "400": {
-            "description": "Bad Request"
-          }
-        }
-      }
-    },
-    "/login": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "example": "any"
-                },
-                "password": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/users": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "admin-user-id",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/users/{userId}/workouts": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "admin-user-id",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "admin-user-id",
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "workout_name": {
-                  "example": "any"
-                },
-                "workout_description": {
-                  "example": "any"
-                },
-                "scheduled_date": {
-                  "example": "any"
-                },
-                "status": {
-                  "example": "any"
-                },
-                "training": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
+
     "/workouts/{workoutId}/training": {
       "get": {
         "description": "",
@@ -1656,58 +1465,6 @@
         }
       }
     },
-    "/exercises": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "admin-user-id",
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "exercise_name": {
-                  "example": "any"
-                },
-                "exercise_area": {
-                  "example": "any"
-                },
-                "exercise_description": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
     "/users/{userId}/nutrition": {
       "post": {
         "description": "",
@@ -1795,639 +1552,6 @@
           },
           "401": {
             "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/{id}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
-      "put": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "example": "any"
-                },
-                "description": {
-                  "example": "any"
-                },
-                "duration": {
-                  "example": "any"
-                },
-                "videoUrl": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
-      "delete": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/": {
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "example": "any"
-                },
-                "description": {
-                  "example": "any"
-                },
-                "duration": {
-                  "example": "any"
-                },
-                "videoUrl": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/workouts/save": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "task_id": {
-                  "example": "any"
-                },
-                "workoutId": {
-                  "example": "any"
-                },
-                "exercises": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/workouts/{workoutId}/exercises": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "workoutId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/exercises/{exerciseId}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "exerciseId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/workouts/{userId}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/nutrition-plans/{userId}": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "plan_name": {
-                  "example": "any"
-                },
-                "plan_description": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/nutrition-plans": {
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/nutrition-plans/{planId}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "planId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/nutrition-plans/{planId}/pdf": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "planId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/users/{userId}/nutrition-plans": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/users/{userId}/measurements/last": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/users/{userId}/steps/last": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/tracking": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "user_id": {
-                  "example": "any"
-                },
-                "task_id": {
-                  "example": "any"
-                },
-                "measurements": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/steps/{taskId}": {
-      "put": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "taskId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "steps_to_do": {
-                  "example": "any"
-                },
-                "avg_steps": {
-                  "example": "any"
-                },
-                "eating_day_free_txt": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "taskId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/tasks/{userId}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/tasks/{taskId}": {
-      "put": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "taskId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "task_status": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/tracking/{userId}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/latest-measurement/{userId}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/food-entry": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "description": {
-                  "example": "any"
-                },
-                "task_id": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
           },
           "500": {
             "description": "Internal Server Error"

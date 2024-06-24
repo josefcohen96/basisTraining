@@ -3,6 +3,7 @@ const path = require('path');
 
 // Create a new nutrition plan
 exports.createNutritionPlan = async (req, res) => {
+  console.log('Creating nutrition plan');
   const { userId } = req.params;
   const { plan_name, plan_description } = req.body;
   const file = req.file;

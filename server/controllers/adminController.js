@@ -121,23 +121,6 @@ exports.addExercise = async (req, res) => {
   }
 };
 
-exports.addNutritionPlan = async (req, res) => {
-  const { userId } = req.params;
-  const { plan_name, plan_description } = req.body;
-  const file = req.file ? req.file.path : null;
-  try {
-    const plan = await NutritionPlan.create({
-      user_id: userId,
-      plan_name,
-      plan_description,
-      file,
-    });
-    res.status(201).json(plan);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
 // add export for addTask for user
 exports.addTask = async (req, res) => {
   const { userId } = req.params;
@@ -158,6 +141,7 @@ exports.addTask = async (req, res) => {
 };
 
 exports.createNutritionPlan = async (req, res) => {
+  console.log('Creating nutrition plan');
   const { userId } = req.params;
   const { plan_name, plan_description } = req.body;
   const file = req.file; // This is the uploaded file

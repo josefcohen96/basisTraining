@@ -120,18 +120,45 @@ exports.register = async (req, res) => {
   }
 };
 
+// exports.login = async (req, res) => {
+//   const { email, password } = req.body;
+//   try {
+//     const user = await User.findOne({ where: { email } });
+//     if (user && await bcrypt.compare(password, user.password)) {
+//       const token = jwt.sign({ id: user.user_id, email: user.email }, secretKey, { expiresIn: '1h' });
+//       res.json({ id: user.user_id, name: user.name, email: user.email, role: user.role, token });
+//     } else {
+//       res.status(400).json({ error: 'Invalid credentials' });
+//     }
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
+
 exports.login = async (req, res) => {
   const { email, password } = req.body;
+  console.log(email, password);
+  // Basic validation
+  if (!email || !password) {
+    return res.status(400).json({ message: 'Email and password are required' });
+  }
 
   try {
     const user = await User.findOne({ where: { email } });
-    if (user && await bcrypt.compare(password, user.password)) {
-      const token = jwt.sign({ id: user.user_id, email: user.email }, secretKey, { expiresIn: '1h' });
-      res.json({ id: user.user_id, name: user.name, email: user.email, role: user.role, token });
-    } else {
-      res.status(400).json({ error: 'Invalid credentials' });
+    if (!user) {
+      console.log('User not found');
+      return res.status(400).json({ message: 'Invalid email or password' });
     }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      console.log('Password does not match');
+      return res.status(400).json({ message: 'Invalid email or password' });
+    }
+
+    const token = jwt.sign({ id: user.id }, secretKey, { expiresIn: '1h' });
+    res.json({ id: user.user_id, name: user.name, email: user.email, role: user.role, token });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
   }
 };
