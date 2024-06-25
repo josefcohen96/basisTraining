@@ -45,7 +45,7 @@
         }
       },
       "put": {
-        "description": "",
+        "description": "update an existing course by id",
         "parameters": [
           {
             "name": "id",
@@ -123,28 +123,46 @@
         }
       },
       "post": {
-        "description": "",
+        "description": "Add a new course",
         "parameters": [
           {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "example": "any"
-                },
-                "description": {
-                  "example": "any"
-                },
-                "duration": {
-                  "example": "any"
-                },
-                "videoUrl": {
-                  "example": "any"
-                }
-              }
-            }
+            "name": "userId",
+            "in": "query",
+            "type": "string",
+            "description": "if the cours is for specicfic user, add userId",
+            "example": "123"
+          },
+          {
+            "name": "name",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": "Name of the course",
+            "example": "Sample Course"
+          },
+          {
+            "name": "description",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": "Description of the course",
+            "example": "This is a sample course description"
+          },
+          {
+            "name": "duration",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": "Duration of the course",
+            "example": "10 hours"
+          },
+          {
+            "name": "videoUrl",
+            "in": "formData",
+            "required": true,
+            "type": "string",
+            "description": "URL of the course video",
+            "example": "http://example.com/video"
           }
         ],
         "responses": {
@@ -159,7 +177,7 @@
     },
     "/api/auth/register": {
       "post": {
-        "description": "send the ",
+        "description": "register a new user",
         "parameters": [
           {
             "name": "body",
@@ -303,7 +321,7 @@
     },
     "/api/auth/login": {
       "post": {
-        "description": "",
+        "description": "login an existing user",
         "parameters": [
           {
             "name": "body",
@@ -1317,7 +1335,6 @@
         }
       }
     },
-
     "/workouts/{workoutId}/training": {
       "get": {
         "description": "",

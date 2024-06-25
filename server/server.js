@@ -109,6 +109,7 @@ const syncDatabase = async () => {
     await db.ResultTracking.sync();
     await db.Exercise.sync();
     await db.Training.sync();
+    await db.approvedEmails.sync();
     console.log('Database synced');
   } catch (error) {
     console.error('Error syncing database:', error);

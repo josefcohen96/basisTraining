@@ -1,4 +1,4 @@
-const { User, Workout, Training, Task, Exercise, NutritionPlan, ApprovedEmail } = require('../models');
+const { User, Workout, Training, Task, Exercise, ApprovedEmail } = require('../models');
 
 exports.getUsers = async (req, res) => {
   try {
