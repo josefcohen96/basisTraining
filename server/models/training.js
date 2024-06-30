@@ -53,7 +53,7 @@ module.exports = (sequelize) => {
       allowNull: true,
     },
     last_set_weight: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.FLOAT,
       allowNull: true,
     },
   }, {

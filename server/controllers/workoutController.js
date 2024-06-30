@@ -1,9 +1,8 @@
 const { Workout, Task, Training, Exercise } = require('../models');
 
 exports.saveWorkoutData = async (req, res) => {
-  logger.debug('Save workout data');
   const { workoutId, exercises } = req.body;
-
+  console.log('Saving Training data for Training');
   try {
     for (const exercise of exercises) {
       await Training.update({
@@ -14,17 +13,17 @@ exports.saveWorkoutData = async (req, res) => {
         where: { training_id: exercise.training_id }
       });
     }
-
+    console.log('Training data saved successfully for workout ID:', workoutId);
     await Workout.update({ status: 'completed' }, { where: { workout_id: workoutId } });
-
+    console.log('save task', req.body.task_id);
     if (req.body.task_id) {
       await Task.update({ task_status: 'Finish' }, { where: { task_id: req.body.task_id } });
     }
 
-    logger.info('Workout data saved successfully for workout ID:', workoutId);
+    console.log('Workout data saved successfully for workout ID:', workoutId);
     res.status(200).json({ message: 'Workout data saved successfully' });
   } catch (error) {
-    logger.error('Error saving workout data for workout ID:', workoutId, error.message);
+    console.error('Error saving workout data for workout ID:', workoutId, error.message);
     res.status(500).json({ error: 'Failed to save workout data' });
   }
 };
@@ -41,7 +40,7 @@ exports.getWorkoutExercises = async (req, res) => {
     });
     res.json(exercises);
   } catch (error) {
-    logger.error('Error fetching exercises for workout ID:', workoutId, error.message);
+    console.error('Error fetching exercises for workout ID:', workoutId, error.message);
     res.status(500).json({ error: 'Failed to fetch exercises' });
   }
 };
@@ -53,7 +52,7 @@ exports.getExerciseById = async (req, res) => {
     const exercise = await Exercise.findOne({ where: { exercise_id: exerciseId } });
     res.json(exercise);
   } catch (error) {
-    logger.error('Error fetching exercise for ID:', exerciseId, error.message);
+    console.error('Error fetching exercise for ID:', exerciseId, error.message);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -69,7 +68,7 @@ exports.getAllWorkoutsForUser = async (req, res) => {
       res.status(404).json({ message: 'No workouts found for this user' });
     }
   } catch (error) {
-    logger.error('Error fetching workouts for user ID:', userId, error.message);
+    console.error('Error fetching workouts for user ID:', userId, error.message);
     res.status(500).json({ error: 'Failed to fetch workouts' });
   }
 };
@@ -80,7 +79,7 @@ exports.getAllExercises = async (req, res) => {
     const exercises = await Exercise.findAll();
     res.json(exercises);
   } catch (error) {
-    logger.error('Error fetching exercises:', error.message);
+    console.error('Error fetching exercises:', error.message);
     res.status(500).json({ error: 'Failed to fetch exercises' });
   }
 };

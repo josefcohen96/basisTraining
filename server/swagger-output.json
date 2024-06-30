@@ -574,7 +574,7 @@
     },
     "/api/admin/approved_emails": {
       "post": {
-        "description": "",
+        "description": "adding user email to the table approved emails",
         "parameters": [
           {
             "name": "admin-user-id",
@@ -609,7 +609,7 @@
     },
     "/api/admin/exercises": {
       "post": {
-        "description": "",
+        "description": "adding a new exercise for exercise table",
         "parameters": [
           {
             "name": "admin-user-id",
@@ -648,53 +648,9 @@
         }
       }
     },
-    "/api/admin/users/{userId}/nutrition": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "admin-user-id",
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "plan_name": {
-                  "example": "any"
-                },
-                "plan_description": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
     "/api/admin/users/{userId}/tasks": {
       "post": {
-        "description": "",
+        "description": "adding a new task for a specific user",
         "parameters": [
           {
             "name": "userId",
@@ -720,10 +676,10 @@
                   "example": "any"
                 },
                 "task_type": {
-                  "example": "any"
+                  "example": "food/measure/steps/workout"
                 },
                 "due_date": {
-                  "example": "any"
+                  "example": "2024-06-24 03:00:00.000 +0300"
                 }
               }
             }
@@ -744,22 +700,54 @@
     },
     "/api/workouts/save": {
       "post": {
-        "description": "",
+        "description": "Saves the workout progress by updating sets done, reps done, and the last set weight for each exercise in the workout. Also updates the overall workout status to 'completed' and updates the task status if a task ID is provided.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
-                "task_id": {
-                  "example": "any"
-                },
                 "workoutId": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "1",
+                  "description": "The unique identifier of the workout that is being updated."
+                },
+                "taskId": {
+                  "type": "string",
+                  "example": "15",
+                  "description": "The unique identifier of the task associated with the workout. Optional parameter, if provided the task status will be updated to 'Finish'."
                 },
                 "exercises": {
-                  "example": "any"
+                  "type": "array",
+                  "description": "List of exercises with details about their completion during the workout.",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "training_id": {
+                        "type": "string",
+                        "example": "1",
+                        "description": "The unique identifier of the training instance for the exercise."
+                      },
+                      "sets_done": {
+                        "type": "integer",
+                        "example": 2,
+                        "description": "The number of sets completed by the user for the exercise."
+                      },
+                      "reps_done": {
+                        "type": "integer",
+                        "example": 12,
+                        "description": "The number of reps completed by the user in the last set for the exercise."
+                      },
+                      "last_set_weight": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 45.5,
+                        "description": "The weight used in the last set of the exercise, measured in kilograms."
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -767,10 +755,10 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Workout data saved successfully."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Internal Server Error. This may occur due to a database issue or an error in processing the update logic."
           }
         }
       }
@@ -1141,7 +1129,7 @@
     },
     "/api/steps/{taskId}": {
       "put": {
-        "description": "",
+        "description": "changing the tasks for user, by adding steps to do or steps done, or adding eating day free text in the result tracking table",
         "parameters": [
           {
             "name": "taskId",
@@ -1226,7 +1214,7 @@
     },
     "/api/tasks/{taskId}": {
       "put": {
-        "description": "",
+        "description": "update task status finish / pending... by task id",
         "parameters": [
           {
             "name": "taskId",
@@ -1307,7 +1295,7 @@
     },
     "/api/food-entry": {
       "post": {
-        "description": "",
+        "description": "upload a food diary for the user, after asked from admin to do so",
         "parameters": [
           {
             "name": "body",
@@ -1354,218 +1342,6 @@
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/training/{trainingId}": {
-      "delete": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "trainingId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "admin-user-id",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
-      "put": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "trainingId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "admin-user-id",
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "exercise_id": {
-                  "example": "any"
-                },
-                "sets_to_do": {
-                  "example": "any"
-                },
-                "reps_to_do": {
-                  "example": "any"
-                },
-                "goal_weight": {
-                  "example": "any"
-                },
-                "manipulation": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/approved_emails": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "admin-user-id",
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/users/{userId}/nutrition": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "admin-user-id",
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "plan_name": {
-                  "example": "any"
-                },
-                "plan_description": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/users/{userId}/tasks": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "admin-user-id",
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "task_name": {
-                  "example": "any"
-                },
-                "task_description": {
-                  "example": "any"
-                },
-                "task_type": {
-                  "example": "any"
-                },
-                "due_date": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Created"
           },
           "401": {
             "description": "Unauthorized"
